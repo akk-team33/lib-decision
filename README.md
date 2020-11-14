@@ -1,6 +1,6 @@
-# lib-template
+# lib-decision
 
-    A template library project
+    Team33 Decision Library
     
     Version 1
 
@@ -13,7 +13,7 @@
     <!-- not yet available -->
     <dependency>
       <groupId>de.team33.libs</groupId>
-      <artifactId>lib-template-01</artifactId>
+      <artifactId>lib-decision-01</artifactId>
       <version>1.0.0</version>
     </dependency>
 
