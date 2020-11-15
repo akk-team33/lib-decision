@@ -31,8 +31,8 @@ public interface Case<I, R> {
     }
 
     /**
-     * Returns the {@link Case} that symbolizes that no specific case has yet been clarified.
-     * It has the following properties:
+     * Returns the {@link Case} that no decision has yet been made in the context of a decision chain or a decision
+     * tree, i.e. the initial {@link Case}. It has the following properties:
      *
      * <ul>
      *     <li>it is itself its own precondition</li>
@@ -40,8 +40,8 @@ public interface Case<I, R> {
      *     <li>it never leads directly to a result</li>
      * </ul>
      */
-    static <I, R> Case<I, R> none() {
-        return None.instance();
+    static <I, R> Case<I, R> initial() {
+        return Initial.instance();
     }
 
     /**
@@ -50,7 +50,7 @@ public interface Case<I, R> {
      * In order to {@link #getCondition() clarify whether a certain case applies}, its precondition must apply.
      * <p>
      * Within a decision chain or a decision tree, exactly one case typically has no real precondition.
-     * Such a case should return the pseudo-case {@link #none()}.
+     * Such a case should return the pseudo-case {@link #initial()}.
      */
     Case<I, R> getPreCondition();
 

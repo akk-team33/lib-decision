@@ -7,7 +7,7 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-import static de.team33.libs.decision.v1.Case.none;
+import static de.team33.libs.decision.v1.Case.initial;
 import static de.team33.libs.decision.v1.Case.not;
 import static java.util.Collections.unmodifiableMap;
 
@@ -22,13 +22,13 @@ public final class Cases<I, R> implements Function<I, R> {
     @SafeVarargs
     public static <I, R> Cases<I, R> build(final Case<I, R>... cases) {
         return Stream.of(cases)
-                     .collect(() -> new Builder<I, R>(none()), Builder::add, Builder::addAll)
+                     .collect(() -> new Builder<I, R>(initial()), Builder::add, Builder::addAll)
                      .build();
     }
 
     @Override
     public final R apply(final I input) {
-        return apply(none(), input);
+        return apply(initial(), input);
     }
 
     private R apply(final Case<I, R> base, final I input) {

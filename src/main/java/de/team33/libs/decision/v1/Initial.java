@@ -3,12 +3,12 @@ package de.team33.libs.decision.v1;
 import java.util.Optional;
 import java.util.function.Predicate;
 
-final class None<I, R> implements Case<I, R> {
+final class Initial<I, R> implements Case<I, R> {
 
     @SuppressWarnings("rawtypes")
-    private static final Case INSTANCE = new None();
+    private static final Case INSTANCE = new Initial();
 
-    private None() {
+    private Initial() {
     }
 
     @SuppressWarnings("unchecked")

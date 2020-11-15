@@ -25,7 +25,7 @@ public class CasesTest {
             @Override
             public Case<Integer, Function<Integer, String>> getPreCondition() {
                 //return null;
-                return Case.none();
+                return Case.initial();
                 //return Case.not(NEGATIVE);
             }
 
@@ -49,7 +49,7 @@ public class CasesTest {
             @Override
             public Case<Integer, Function<Integer, String>> getPreCondition() {
                 //return null;
-                //return Case.none();
+                //return Case.initial();
                 return Case.not(POSITIVE);
             }
 

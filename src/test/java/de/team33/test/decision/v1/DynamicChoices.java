@@ -10,7 +10,7 @@ import static de.team33.libs.decision.v1.Case.*;
 
 enum DynamicChoices implements Case<Input, String> {
 
-    CASE_0___(none(), input -> 0 == input.a),
+    CASE_0___(initial(), input -> 0 == input.a),
     CASE_00__(CASE_0___, input -> 0 == input.b),
     CASE_000_(CASE_00__, input -> 0 == input.c),
 
