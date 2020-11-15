@@ -13,56 +13,24 @@ import java.util.function.Predicate;
 public interface Case<I, R> {
 
     /**
-     * Returns the opposite of a given {@link Case}.
-     * It has the following properties:
-     * <ul>
-     *     <li>it has the same precondition as the original</li>
-     *     <li>it has the inverse condition of the original
-     *     (if the original has no condition it makes no sense to get its opposite)</li>
-     *     <li>it never leads directly to a result</li>
-     * </ul>
-     * <p>
-     * The opposite of a {@link Case} is not a negation in the strictly boolean sense.
-     * In fact, the opposite of a case has the same precondition as the original case.
-     * Only the case-specific condition is negated.
-     */
-    static <I, R> Case<I, R> not(final Case<I, R> original) {
-        return Opposite.of(original);
-    }
-
-    /**
-     * Returns the {@link Case} that no decision has yet been made in the context of a decision chain or a decision
-     * tree, i.e. the initial {@link Case}. It has the following properties:
-     *
-     * <ul>
-     *     <li>it is itself its own precondition</li>
-     *     <li>it is always fulfilled</li>
-     *     <li>it never leads directly to a result</li>
-     * </ul>
-     */
-    static <I, R> Case<I, R> initial() {
-        return Initial.instance();
-    }
-
-    /**
      * Returns the precondition for this {@link Case}.
      * <p>
      * In order to {@link #getCondition() clarify whether a certain case applies}, its precondition must apply.
      * <p>
      * Within a decision chain or a decision tree, exactly one case typically has no real precondition.
-     * Such a case should return the pseudo-case {@link #initial()}.
+     * Such a case should return the pseudo-case {@link Cases#initial()}.
      */
     Case<I, R> getPreCondition();
 
     /**
      * Provides {@link Optional (indirectly)} a {@link Predicate condition} that (in addition to the
      * {@link #getPreCondition() precondition}) must be fulfilled for this {@link Case} to apply if such a condition
-     * exists. This implies the {@link #not(Case) opposite case}, in which the same precondition applies but this
+     * exists. This implies the {@link Cases#not(Case) opposite case}, in which the same precondition applies but this
      * condition does exactly not apply.
      * <p>
      * If no such condition exists (i.e. the result is {@link Optional#empty()}), this means that only the
      * {@link #getPreCondition() precondition} must be fulfilled for this case to apply. This fact does not imply an
-     * opposite case (or an {@link #not(Case) opposite case} that can never apply).
+     * opposite case (or an {@link Cases#not(Case) opposite case} that can never apply).
      */
     Optional<Predicate<I>> getCondition();
 

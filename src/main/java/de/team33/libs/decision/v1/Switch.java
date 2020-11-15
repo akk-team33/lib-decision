@@ -7,8 +7,8 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-import static de.team33.libs.decision.v1.Case.initial;
-import static de.team33.libs.decision.v1.Case.not;
+import static de.team33.libs.decision.v1.Cases.initial;
+import static de.team33.libs.decision.v1.Cases.not;
 import static java.util.Collections.unmodifiableMap;
 
 public final class Switch<I, R> implements Function<I, R> {

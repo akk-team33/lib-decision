@@ -4,73 +4,24 @@ import de.team33.libs.decision.v1.Case;
 import de.team33.libs.decision.v1.Switch;
 import org.junit.Test;
 
-import java.util.Optional;
 import java.util.Random;
 import java.util.function.Function;
-import java.util.function.Predicate;
 
+import static de.team33.libs.decision.v1.Cases.initial;
+import static de.team33.libs.decision.v1.Cases.not;
+import static de.team33.libs.decision.v1.Cases.simple;
 import static de.team33.libs.testing.v1.Attempts.tryParallel;
 import static de.team33.libs.testing.v1.Attempts.trySerial;
 import static org.junit.Assert.assertEquals;
 
 public class SwitchTest {
 
-    private static final Case<Integer, Function<Integer, String>> POSITIVE;
-
-    private static final Case<Integer, Function<Integer, String>> NEGATIVE;
-
-    static {
-        POSITIVE = new Case<Integer, Function<Integer, String>>() {
-
-            @Override
-            public Case<Integer, Function<Integer, String>> getPreCondition() {
-                //return null;
-                return Case.initial();
-                //return Case.not(NEGATIVE);
-            }
-
-            @Override
-            public Optional<Predicate<Integer>> getCondition() {
-                return Optional.of(input -> input > 0);
-            }
-
-            @Override
-            public Optional<Function<Integer, String>> getResult() {
-                return Optional.of(String::valueOf);
-            }
-
-            @Override
-            public String toString() {
-                return "POSITIVE";
-            }
-        };
-        NEGATIVE = new Case<Integer, Function<Integer, String>>() {
-
-            @Override
-            public Case<Integer, Function<Integer, String>> getPreCondition() {
-                //return null;
-                //return Case.initial();
-                return Case.not(POSITIVE);
-            }
-
-            @Override
-            public Optional<Predicate<Integer>> getCondition() {
-                //return Optional.of(input -> input < 0);
-                return Optional.empty();
-            }
-
-            @Override
-            public Optional<Function<Integer, String>> getResult() {
-                return Optional.of(input -> String.valueOf(-input));
-                //return Optional.empty();
-            }
-
-            @Override
-            public String toString() {
-                return "NEGATIVE";
-            }
-        };
-    }
+    private static final Case<Integer, Function<Integer, String>> POSITIVE =
+            simple(initial(), input -> input > 0, String::valueOf);
+    private static final Function<Integer, String> NEGATIVE_FUNCTION =
+            input -> String.valueOf(-input);
+    private static final Case<Integer, Function<Integer, String>> NEGATIVE =
+            simple(not(POSITIVE), NEGATIVE_FUNCTION);
 
     private final Random random = new Random();
 
