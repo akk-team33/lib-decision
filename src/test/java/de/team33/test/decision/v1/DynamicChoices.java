@@ -1,7 +1,7 @@
 package de.team33.test.decision.v1;
 
 import de.team33.libs.decision.v1.Case;
-import de.team33.libs.decision.v1.Cases;
+import de.team33.libs.decision.v1.Switch;
 
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -34,7 +34,7 @@ enum DynamicChoices implements Case<Input, String> {
     CASE_1110(not(CASE_101_), input -> 0 == input.d, "1110"),
     CASE_1111(not(CASE_1110), "1111");
 
-    private static final Cases<Input, String> CASES = Cases.build(values());
+    private static final Switch<Input, String> SWITCH = Switch.build(values());
 
     private final Case<Input, String> preCondition;
     private final Predicate<Input> predicate;
@@ -58,7 +58,7 @@ enum DynamicChoices implements Case<Input, String> {
     }
 
     static String map(final Input input) {
-        return CASES.apply(input);
+        return SWITCH.apply(input);
     }
 
     public final Case<Input, String> getPreCondition() {
