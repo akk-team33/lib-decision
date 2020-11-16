@@ -7,9 +7,7 @@ import org.junit.Test;
 import java.util.Random;
 import java.util.function.Function;
 
-import static de.team33.libs.decision.v1.Cases.initial;
 import static de.team33.libs.decision.v1.Cases.not;
-import static de.team33.libs.decision.v1.Cases.simple;
 import static de.team33.libs.testing.v1.Attempts.tryParallel;
 import static de.team33.libs.testing.v1.Attempts.trySerial;
 import static org.junit.Assert.assertEquals;
@@ -17,11 +15,9 @@ import static org.junit.Assert.assertEquals;
 public class ChoicesTest {
 
     private static final Case<Integer, Function<Integer, String>> POSITIVE =
-            simple(initial(), input -> input > 0, String::valueOf);
-    private static final Function<Integer, String> NEGATIVE_FUNCTION =
-            input -> String.valueOf(-input);
+            Case.head(input -> input > 0, String::valueOf);
     private static final Case<Integer, Function<Integer, String>> NEGATIVE =
-            simple(not(POSITIVE), NEGATIVE_FUNCTION);
+            Case.tail(not(POSITIVE), input -> String.valueOf(-input));
 
     private final Random random = new Random();
 
