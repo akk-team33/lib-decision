@@ -7,8 +7,8 @@
     <version>1.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>Team33 Library Template</name>
-    <description>A library decision</description>
+    <name>Team33 Dexision Library</name>
+    <description>Classes and tools for implementing complex decision trees or sequences</description>
     <url>https://github.com/akk-team33/lib-decision</url>
 
     <licenses>
