@@ -12,6 +12,8 @@ import java.util.function.Predicate;
  */
 public interface Case<I, R> {
 
+    //static <I, R> Case<I, R>
+
     /**
      * Returns the precondition for this {@link Case}.
      * <p>

@@ -1,7 +1,7 @@
 package de.team33.test.decision.v1;
 
 import de.team33.libs.decision.v1.Case;
-import de.team33.libs.decision.v1.Switch;
+import de.team33.libs.decision.v1.Choices;
 import org.junit.Test;
 
 import java.util.Random;
@@ -14,7 +14,7 @@ import static de.team33.libs.testing.v1.Attempts.tryParallel;
 import static de.team33.libs.testing.v1.Attempts.trySerial;
 import static org.junit.Assert.assertEquals;
 
-public class SwitchTest {
+public class ChoicesTest {
 
     private static final Case<Integer, Function<Integer, String>> POSITIVE =
             simple(initial(), input -> input > 0, String::valueOf);
@@ -43,7 +43,7 @@ public class SwitchTest {
 
     @Test
     public final void checkDualParallel() {
-        final Switch<Integer, Function<Integer, String>> subject = Switch.build(POSITIVE, NEGATIVE);
+        final Choices<Integer, Function<Integer, String>> subject = Choices.build(POSITIVE, NEGATIVE);
         tryParallel(100, () -> {
             final int input = random.nextInt();
             final String result = subject.apply(input).apply(input);
