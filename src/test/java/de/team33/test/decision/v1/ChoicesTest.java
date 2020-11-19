@@ -7,7 +7,7 @@ import org.junit.Test;
 import java.util.Random;
 import java.util.function.Function;
 
-import static de.team33.libs.decision.v1.Cases.not;
+import static de.team33.libs.decision.v1.Case.not;
 import static de.team33.libs.testing.v1.Attempts.tryParallel;
 import static de.team33.libs.testing.v1.Attempts.trySerial;
 import static org.junit.Assert.assertEquals;

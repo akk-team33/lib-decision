@@ -7,8 +7,8 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-import static de.team33.libs.decision.v1.Cases.initial;
-import static de.team33.libs.decision.v1.Cases.not;
+import static de.team33.libs.decision.v1.Case.pending;
+import static de.team33.libs.decision.v1.Case.not;
 import static java.util.Collections.unmodifiableMap;
 
 public final class Choices<I, R> implements Function<I, R> {
@@ -22,13 +22,13 @@ public final class Choices<I, R> implements Function<I, R> {
     @SafeVarargs
     public static <I, R> Choices<I, R> build(final Case<I, R>... cases) {
         return Stream.of(cases)
-                     .collect(() -> new Builder<I, R>(initial()), Builder::add, Builder::addAll)
+                     .collect(() -> new Builder<I, R>(pending()), Builder::add, Builder::addAll)
                      .build();
     }
 
     @Override
     public final R apply(final I input) {
-        return apply(initial(), input);
+        return apply(pending(), input);
     }
 
     private R apply(final Case<I, R> base, final I input) {

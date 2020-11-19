@@ -76,7 +76,8 @@ public interface Case<I, R> {
      * </ul>
      */
     static <I, R> Case<I, R> pending() {
-        return Cases.initial();
+        //noinspection unchecked
+        return Initial.INSTANCE;
     }
 
     /**
@@ -91,8 +92,8 @@ public interface Case<I, R> {
      * In fact, the opposite of a case has the same precondition as the original case.
      * Only the case-specific condition is negated.
      */
-    public static <I, R> Case<I, R> not(final Case<I, R> original) {
-        return Cases.not(original);
+    static <I, R> Case<I, R> not(final Case<I, R> original) {
+        return Opposite.of(original);
     }
 
     /**
@@ -100,7 +101,7 @@ public interface Case<I, R> {
      * represent a final result. Such a {@link Case} implies an {@link #not(Case) opposite}.
      */
     static <I, R> Case<I, R> head(final Predicate<I> condition) {
-        return Cases.simple(Cases.initial(), condition, null);
+        return new Simple<>(pending(), condition, null);
     }
 
     /**
@@ -108,19 +109,19 @@ public interface Case<I, R> {
      * a final result. Such a {@link Case} implies an {@link #not(Case) opposite}.
      */
     static <I, R> Case<I, R> head(final Predicate<I> condition, final R result) {
-        return Cases.simple(Cases.initial(), condition, result);
+        return new Simple<>(pending(), condition, result);
     }
 
     static <I, R> Case<I, R> mean(final Case<I, R> preCondition, final Predicate<I> condition) {
-        return Cases.simple(preCondition, condition, null);
+        return new Simple<>(preCondition, condition, null);
     }
 
     static <I, R> Case<I, R> mean(final Case<I, R> preCondition, final Predicate<I> condition, final R result) {
-        return Cases.simple(preCondition, condition, result);
+        return new Simple<>(preCondition, condition, result);
     }
 
     static <I, R> Case<I, R> tail(final Case<I, R> preCondition, final R result) {
-        return Cases.simple(preCondition, null, result);
+        return new Simple<>(pending(), null, result);
     }
 
     /**
@@ -129,19 +130,19 @@ public interface Case<I, R> {
      * In order to {@link #getCondition() clarify whether a certain case applies}, its precondition must apply.
      * <p>
      * Within a decision chain or a decision tree, exactly one case typically has no real precondition.
-     * Such a case should return the pseudo-case {@link Cases#initial()}.
+     * Such a case should return the pseudo-case {@link Case#pending()}.
      */
     Case<I, R> getPreCondition();
 
     /**
      * Provides {@link Optional (indirectly)} a {@link Predicate condition} that (in addition to the
      * {@link #getPreCondition() precondition}) must be fulfilled for this {@link Case} to apply if such a condition
-     * exists. This implies the {@link Cases#not(Case) opposite case}, in which the same precondition applies but this
+     * exists. This implies the {@link #not(Case) opposite case}, in which the same precondition applies but this
      * condition does exactly not apply.
      * <p>
      * If no such condition exists (i.e. the result is {@link Optional#empty()}), this means that only the
      * {@link #getPreCondition() precondition} must be fulfilled for this case to apply. This fact does not imply an
-     * opposite case (or an {@link Cases#not(Case) opposite case} that can never apply).
+     * opposite case (or an {@link #not(Case) opposite case} that can never apply).
      */
     Optional<Predicate<I>> getCondition();
 
