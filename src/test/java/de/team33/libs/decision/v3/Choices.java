@@ -1,85 +1,94 @@
 package de.team33.libs.decision.v3;
 
+import de.team33.libs.decision.v1.UndefinedException;
+import de.team33.libs.decision.v1.UnusedException;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
-import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-public class Choices<I, R> implements Function<I, R> {
+import static de.team33.libs.decision.v3.Case.not;
+import static de.team33.libs.decision.v3.Case.pending;
+import static java.util.Collections.unmodifiableMap;
 
-    private final Node<I, R> root = new Node<>();
+public final class Choices<I, R> implements Function<I, R> {
+
+    private final Map<Case<I, R>, Case<I, R>> postConditions;
+
+    private Choices(final Builder<I, R> builder) {
+        postConditions = unmodifiableMap(builder.postConditions);
+    }
 
     @SafeVarargs
-    public static <I, R> Choices<I, R> build(Supplier<Choice<I, R>>... choices) {
-        return Stream.of(choices)
-                     .collect(() -> new Builder<I, R>(), Builder::add, Builder::addAll)
+    public static <I, R> Choices<I, R> build(final Case<I, R>... cases) {
+        return Stream.of(cases)
+                     .collect(() -> new Builder<I, R>(pending()), Builder::add, Builder::addAll)
                      .build();
     }
 
     @Override
     public final R apply(final I input) {
-        throw new UnsupportedOperationException("not yet implemented");
+        return apply(pending(), input);
     }
 
-    private R apply(final Case<I, R> subject, final I input) {
-        return Case.asFinal(subject)
-                   .map(Case.Final::getResult)
-                   .orElseGet(() -> applyChoice(subject, input));
+    private R apply(final Case<I, R> base, final I input) {
+        return base.getResult().orElseGet(() -> applyPost(base, input));
     }
 
-    private R applyChoice(final Case<I, R> subject, final I input) {
-        return Case.asMean(subject)
-                   .map(Case.Mean::getChoice)
-                   .map(choice -> apply(choice, input))
-                   .orElseThrow(IllegalStateException::new);
+    private R applyPost(final Case<I, R> base, final I input) {
+        return apply(nextCase(postConditions.get(base), input), input);
     }
 
-    private R apply(final Choice<I, R> choice, final I input) {
-        final Case<I, R> next = choice.getCondition().test(input) ? choice.getPositive() : choice.getNegative();
-        return apply(next, input);
+    private static <I, R> Case<I, R> nextCase(final Case<I, R> subject, final I input) {
+        return subject.getCondition()
+                      .map(condition -> condition.test(input) ? subject : not(subject))
+                      .orElse(subject);
     }
 
-    private static class Builder<I, R> {
+    private static final class Builder<I, R> {
 
-        private final Map<Case<I, R>, Choice<I, R>> backing = new HashMap<>(0);
+        private final Map<Case<I, R>, Case<I, R>> postConditions = new HashMap<>(0);
         private final Set<Object> defined = new HashSet<>(0);
         private final Set<Object> used = new HashSet<>(0);
 
-        private void add(final Supplier<Choice<I, R>> choice) {
-            backing.put(choice.get().getPreCondition(), choice.get());
-            defined.add(choice.getPreCondition());
-            used.add(choice);
-            if (choice.getResult().isPresent())
-                defined.add(choice);
-            throw new UnsupportedOperationException("not yet implemented");
+        private Builder(final Case<Object, Object> none) {
+            used.add(none);
+        }
+
+        private void add(final Case<I, R> next) {
+            final Case<I, R> pre = next.getPreCondition();
+            postConditions.put(pre, next);
+            defined.add(pre);
+            if (next.getResult().isPresent()) {
+                defined.add(next);
+            }
+            used.add(next);
+            if (next.getCondition().isPresent()) {
+                used.add(not(next));
+            }
         }
 
         private void addAll(final Builder<I, R> other) {
-            throw new UnsupportedOperationException("not yet implemented");
+            throw new UnsupportedOperationException("shouldn't be necessary here");
         }
 
-        private Choices<I, R> build() {
-            throw new UnsupportedOperationException("not yet implemented");
-        }
-    }
+        public Choices<I, R> build() {
+            final Set<Object> undefined = new HashSet<>(used);
+            undefined.removeAll(defined);
+            if (!undefined.isEmpty()) {
+                throw new UndefinedException(undefined);
+            }
 
-    private static class Node<I, R> {
+            final Set<Object> unused = new HashSet<>(defined);
+            unused.removeAll(used);
+            if (!unused.isEmpty()) {
+                throw new UnusedException(unused);
+            }
 
-        private final de.team33.libs.decision.v2.Choice<I, R> choice;
-        private final Node<I, R> positive;
-        private final Node<I, R> negative;
-
-        private Node() {
-            choice = null;
-            positive = null;
-            negative = null;
-        }
-
-        private Node<I, R> get(final Choice<I, R> choice) {
-            throw new UnsupportedOperationException("not yet implemented");
+            return new Choices<I, R>(this);
         }
     }
 }

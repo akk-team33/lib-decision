@@ -121,7 +121,7 @@ public interface Case<I, R> {
     }
 
     static <I, R> Case<I, R> tail(final Case<I, R> preCondition, final R result) {
-        return new Simple<>(pending(), null, result);
+        return new Simple<>(preCondition, null, result);
     }
 
     /**
