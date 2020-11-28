@@ -4,23 +4,23 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
 
-final class Simple<I, R> implements Case<I, R> {
+final class Simple<I, R> implements Event<I, R> {
 
     private static final AtomicInteger INDEX = new AtomicInteger(0);
 
-    private final Case<I, R> preCondition;
+    private final Event<I, R> preCondition;
     private final Predicate<I> condition;
     private final R result;
     private final int index = INDEX.incrementAndGet();
 
-    Simple(final Case<I, R> preCondition, final Predicate<I> condition, final R result) {
+    Simple(final Event<I, R> preCondition, final Predicate<I> condition, final R result) {
         this.preCondition = preCondition;
         this.condition = condition;
         this.result = result;
     }
 
     @Override
-    public final Case<I, R> getPreCondition() {
+    public final Event<I, R> getPreCondition() {
         return preCondition;
     }
 

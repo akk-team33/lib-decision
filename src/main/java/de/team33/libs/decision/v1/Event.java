@@ -14,18 +14,18 @@ import java.util.function.Predicate;
  *
  * package ...;
  *
- * import de.team33.libs.decision.v1.Case;
+ * import de.team33.libs.decision.v1.Event;
  * import de.team33.libs.decision.v1.Decision;
  *
  * import java.util.Optional;
  * import java.util.function.Predicate;
  *
- * import static de.team33.libs.decision.v1.Case.head;
- * import static de.team33.libs.decision.v1.Case.mean;
- * import static de.team33.libs.decision.v1.Case.not;
- * import static de.team33.libs.decision.v1.Case.tail;
+ * import static de.team33.libs.decision.v1.Event.head;
+ * import static de.team33.libs.decision.v1.Event.mean;
+ * import static de.team33.libs.decision.v1.Event.not;
+ * import static de.team33.libs.decision.v1.Event.tail;
  *
- * public enum Signum implements Case&lt;Integer, Integer&gt; {
+ * public enum Signum implements Event&lt;Integer, Integer&gt; {
  *
  *     NEGATIVE(head(input -&gt; input &lt; 0, -1)),
  *     POSITIVE(mean(not(NEGATIVE), input -&gt; input &gt; 0, 1)),
@@ -33,9 +33,9 @@ import java.util.function.Predicate;
  *
  *     private static final Decision&lt;Integer, Integer&gt; CHOICES = Decision.build(values());
  *
- *     private final Case&lt;Integer, Integer&gt; backing;
+ *     private final Event&lt;Integer, Integer&gt; backing;
  *
- *     Signum(final Case&lt;Integer, Integer&gt; backing) {
+ *     Signum(final Event&lt;Integer, Integer&gt; backing) {
  *         this.backing = backing;
  *     }
  *
@@ -44,7 +44,7 @@ import java.util.function.Predicate;
  *     }
  *
  *     &#64;Override
- *     public final Case&lt;Integer, Integer&gt; getPreCondition() {
+ *     public final Event&lt;Integer, Integer&gt; getPreCondition() {
  *         return backing.getPreCondition();
  *     }
  *
@@ -63,10 +63,10 @@ import java.util.function.Predicate;
  * @param <I> The type of parameters to be expected
  * @param <R> The type of result to be expected
  */
-public interface Case<I, R> {
+public interface Event<I, R> {
 
     /**
-     * Represents the {@link Case} where no decision has yet been made in the context of a decision tree or a decision
+     * Represents the {@link Event} where no decision has yet been made in the context of a decision tree or a decision
      * chain. It has the following properties:
      *
      * <ul>
@@ -75,74 +75,74 @@ public interface Case<I, R> {
      *     <li>It never represents a final result</li>
      * </ul>
      */
-    static <I, R> Case<I, R> pending() {
+    static <I, R> Event<I, R> pending() {
         //noinspection unchecked
         return Initial.INSTANCE;
     }
 
     /**
-     * Returns the opposite of an original {@link Case}. It has the following properties:
+     * Returns the opposite of an original {@link Event}. It has the following properties:
      * <ul>
      *     <li>It has the same {@link #getPreCondition() precondition} as the original.</li>
      *     <li>It has the inverse {@link #getCondition() condition} of the original.</li>
      *     <li>It never represents a final result</li>
      * </ul>
      * <p>
-     * The opposite of a {@link Case} is not a negation in the strictly boolean sense.
+     * The opposite of a {@link Event} is not a negation in the strictly boolean sense.
      * In fact, the opposite of a case has the same precondition as the original case.
      * Only the case-specific condition is negated.
      */
-    static <I, R> Case<I, R> not(final Case<I, R> original) {
+    static <I, R> Event<I, R> not(final Event<I, R> original) {
         return Opposite.of(original);
     }
 
     /**
-     * Returns a {@link Case} whose {@link #getPreCondition() precondition} is {@link #pending()} and which does not
-     * represent a final result. Such a {@link Case} implies an {@link #not(Case) opposite}.
+     * Returns a {@link Event} whose {@link #getPreCondition() precondition} is {@link #pending()} and which does not
+     * represent a final result. Such a {@link Event} implies an {@link #not(Event) opposite}.
      */
-    static <I, R> Case<I, R> head(final Predicate<I> condition) {
+    static <I, R> Event<I, R> head(final Predicate<I> condition) {
         return new Simple<>(pending(), condition, null);
     }
 
     /**
-     * Returns a {@link Case} whose {@link #getPreCondition() precondition} is {@link #pending()} and which represents
-     * a final result. Such a {@link Case} implies an {@link #not(Case) opposite}.
+     * Returns a {@link Event} whose {@link #getPreCondition() precondition} is {@link #pending()} and which represents
+     * a final result. Such a {@link Event} implies an {@link #not(Event) opposite}.
      */
-    static <I, R> Case<I, R> head(final Predicate<I> condition, final R result) {
+    static <I, R> Event<I, R> head(final Predicate<I> condition, final R result) {
         return new Simple<>(pending(), condition, result);
     }
 
-    static <I, R> Case<I, R> mean(final Case<I, R> preCondition, final Predicate<I> condition) {
+    static <I, R> Event<I, R> mean(final Event<I, R> preCondition, final Predicate<I> condition) {
         return new Simple<>(preCondition, condition, null);
     }
 
-    static <I, R> Case<I, R> mean(final Case<I, R> preCondition, final Predicate<I> condition, final R result) {
+    static <I, R> Event<I, R> mean(final Event<I, R> preCondition, final Predicate<I> condition, final R result) {
         return new Simple<>(preCondition, condition, result);
     }
 
-    static <I, R> Case<I, R> tail(final Case<I, R> preCondition, final R result) {
+    static <I, R> Event<I, R> tail(final Event<I, R> preCondition, final R result) {
         return new Simple<>(preCondition, null, result);
     }
 
     /**
-     * Returns the precondition for this {@link Case}.
+     * Returns the precondition for this {@link Event}.
      * <p>
      * In order to {@link #getCondition() clarify whether a certain case applies}, its precondition must apply.
      * <p>
      * Within a decision chain or a decision tree, exactly one case typically has no real precondition.
-     * Such a case should return the pseudo-case {@link Case#pending()}.
+     * Such a case should return the pseudo-case {@link Event#pending()}.
      */
-    Case<I, R> getPreCondition();
+    Event<I, R> getPreCondition();
 
     /**
      * Provides {@link Optional (indirectly)} a {@link Predicate condition} that (in addition to the
-     * {@link #getPreCondition() precondition}) must be fulfilled for this {@link Case} to apply if such a condition
-     * exists. This implies the {@link #not(Case) opposite case}, in which the same precondition applies but this
+     * {@link #getPreCondition() precondition}) must be fulfilled for this {@link Event} to apply if such a condition
+     * exists. This implies the {@link #not(Event) opposite case}, in which the same precondition applies but this
      * condition does exactly not apply.
      * <p>
      * If no such condition exists (i.e. the result is {@link Optional#empty()}), this means that only the
      * {@link #getPreCondition() precondition} must be fulfilled for this case to apply. This fact does not imply an
-     * opposite case (or an {@link #not(Case) opposite case} that can never apply).
+     * opposite case (or an {@link #not(Event) opposite case} that can never apply).
      */
     Optional<Predicate<I>> getCondition();
 

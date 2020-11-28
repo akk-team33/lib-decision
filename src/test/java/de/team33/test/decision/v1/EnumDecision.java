@@ -1,19 +1,19 @@
 package de.team33.test.decision.v1;
 
-import de.team33.libs.decision.v1.Case;
+import de.team33.libs.decision.v1.Event;
 import de.team33.libs.decision.v1.Decision;
 import de.team33.test.decision.shared.Input;
 
 import java.util.Optional;
 import java.util.function.Predicate;
 
-import static de.team33.libs.decision.v1.Case.head;
-import static de.team33.libs.decision.v1.Case.mean;
-import static de.team33.libs.decision.v1.Case.not;
-import static de.team33.libs.decision.v1.Case.tail;
+import static de.team33.libs.decision.v1.Event.head;
+import static de.team33.libs.decision.v1.Event.mean;
+import static de.team33.libs.decision.v1.Event.not;
+import static de.team33.libs.decision.v1.Event.tail;
 import static de.team33.test.decision.v1.EnumDecision.Condition.*;
 
-enum EnumDecision implements Case<Input, String> {
+enum EnumDecision implements Event<Input, String> {
 
     CASE_0___(head(A_IS_0)),
     CASE_00__(mean(CASE_0___, B_IS_0)),
@@ -41,9 +41,9 @@ enum EnumDecision implements Case<Input, String> {
 
     private static final Decision<Input, String> DECISION = Decision.build(values());
 
-    private final Case<Input, String> backing;
+    private final Event<Input, String> backing;
 
-    EnumDecision(final Case<Input, String> backing) {
+    EnumDecision(final Event<Input, String> backing) {
         this.backing = backing;
     }
 
@@ -52,7 +52,7 @@ enum EnumDecision implements Case<Input, String> {
     }
 
     @Override
-    public final Case<Input, String> getPreCondition() {
+    public final Event<Input, String> getPreCondition() {
         return backing.getPreCondition();
     }
 

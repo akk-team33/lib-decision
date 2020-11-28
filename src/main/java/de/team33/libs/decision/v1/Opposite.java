@@ -5,24 +5,24 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
 
-final class Opposite<I, R> implements Case<I, R> {
+final class Opposite<I, R> implements Event<I, R> {
 
     @SuppressWarnings("rawtypes")
-    private static final Map<Case, Opposite> CACHE = new ConcurrentHashMap<>(0);
+    private static final Map<Event, Opposite> CACHE = new ConcurrentHashMap<>(0);
     @SuppressWarnings("rawtypes")
     private static final Predicate NEVER = input -> false;
 
-    private final Case<I, R> original;
+    private final Event<I, R> original;
     private final Predicate<I> predicate;
 
-    private Opposite(final Case<I, R> original) {
+    private Opposite(final Event<I, R> original) {
         this.original = original;
         predicate = original.getCondition()
                             .map(Opposite::inverse)
                             .orElseGet(Opposite::never);
     }
 
-    static <I, R> Case<I, R> of(final Case<I, R> original) {
+    static <I, R> Event<I, R> of(final Event<I, R> original) {
         //noinspection unchecked
         return (original instanceof Opposite)
                 ? ((Opposite<I, R>) original).original
@@ -39,7 +39,7 @@ final class Opposite<I, R> implements Case<I, R> {
     }
 
     @Override
-    public final Case<I, R> getPreCondition() {
+    public final Event<I, R> getPreCondition() {
         return original.getPreCondition();
     }
 

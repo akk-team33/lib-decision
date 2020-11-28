@@ -3,16 +3,16 @@ package de.team33.libs.decision.v1;
 import java.util.Optional;
 import java.util.function.Predicate;
 
-final class Initial<I, R> implements Case<I, R> {
+final class Initial<I, R> implements Event<I, R> {
 
     @SuppressWarnings("rawtypes")
-    static final Case INSTANCE = new Initial();
+    static final Event INSTANCE = new Initial();
 
     private Initial() {
     }
 
     @Override
-    public final Case<I, R> getPreCondition() {
+    public final Event<I, R> getPreCondition() {
         return this;
     }
 

@@ -1,6 +1,6 @@
 package de.team33.test.decision.v1;
 
-import de.team33.libs.decision.v1.Case;
+import de.team33.libs.decision.v1.Event;
 import de.team33.test.decision.shared.Input;
 import org.junit.Test;
 
@@ -10,13 +10,13 @@ import java.util.List;
 import java.util.Random;
 import java.util.stream.Stream;
 
-import static de.team33.libs.decision.v1.Case.not;
+import static de.team33.libs.decision.v1.Event.not;
 import static de.team33.libs.testing.v1.Attempts.tryParallel;
 import static de.team33.libs.testing.v1.Attempts.trySerial;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 
-public class CaseTest {
+public class EventTest {
 
     private final Random random = new Random();
 
@@ -41,7 +41,7 @@ public class CaseTest {
         });
     }
 
-    private static boolean isMatching(final Case<Input, String> choice, final Input input) {
+    private static boolean isMatching(final Event<Input, String> choice, final Input input) {
         return choice.getCondition()
                      .map(condition -> condition.test(input))
                      .orElse(true);

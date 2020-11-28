@@ -14,18 +14,18 @@ import java.util.function.Predicate;
  *
  * package ...;
  *
- * import de.team33.libs.decision.v1.Case;
+ * import de.team33.libs.decision.v1.Event;
  * import de.team33.libs.decision.v1.Decision;
  *
  * import java.util.Optional;
  * import java.util.function.Predicate;
  *
- * import static de.team33.libs.decision.v1.Case.head;
- * import static de.team33.libs.decision.v1.Case.mean;
- * import static de.team33.libs.decision.v1.Case.not;
- * import static de.team33.libs.decision.v1.Case.tail;
+ * import static de.team33.libs.decision.v1.Event.head;
+ * import static de.team33.libs.decision.v1.Event.mean;
+ * import static de.team33.libs.decision.v1.Event.not;
+ * import static de.team33.libs.decision.v1.Event.tail;
  *
- * public enum Signum implements Case&lt;Integer, Integer&gt; {
+ * public enum Signum implements Event&lt;Integer, Integer&gt; {
  *
  *     NEGATIVE(head(input -&gt; input &lt; 0, -1)),
  *     POSITIVE(mean(not(NEGATIVE), input -&gt; input &gt; 0, 1)),
@@ -33,9 +33,9 @@ import java.util.function.Predicate;
  *
  *     private static final Decision&lt;Integer, Integer&gt; CHOICES = Decision.build(values());
  *
- *     private final Case&lt;Integer, Integer&gt; backing;
+ *     private final Event&lt;Integer, Integer&gt; backing;
  *
- *     Signum(final Case&lt;Integer, Integer&gt; backing) {
+ *     Signum(final Event&lt;Integer, Integer&gt; backing) {
  *         this.backing = backing;
  *     }
  *
@@ -44,7 +44,7 @@ import java.util.function.Predicate;
  *     }
  *
  *     &#64;Override
- *     public final Case&lt;Integer, Integer&gt; getPreCondition() {
+ *     public final Event&lt;Integer, Integer&gt; getPreCondition() {
  *         return backing.getPreCondition();
  *     }
  *
