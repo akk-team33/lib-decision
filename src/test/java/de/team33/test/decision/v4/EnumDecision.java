@@ -3,7 +3,7 @@ package de.team33.test.decision.v4;
 import de.team33.libs.decision.v4.Case;
 import de.team33.libs.decision.v4.Decision;
 import de.team33.libs.decision.v4.Stage;
-import de.team33.test.decision.v1.Input;
+import de.team33.test.decision.shared.Input;
 
 import java.util.function.Supplier;
 

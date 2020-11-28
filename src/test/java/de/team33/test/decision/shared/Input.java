@@ -1,4 +1,4 @@
-package de.team33.test.decision.v1;
+package de.team33.test.decision.shared;
 
 public class Input {
 

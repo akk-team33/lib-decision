@@ -2,6 +2,7 @@ package de.team33.test.decision.v1;
 
 import de.team33.libs.decision.v1.Case;
 import de.team33.libs.decision.v1.Choices;
+import de.team33.test.decision.shared.Input;
 
 import java.util.Optional;
 import java.util.function.Predicate;
