@@ -15,7 +15,7 @@ import java.util.function.Predicate;
  * package ...;
  *
  * import de.team33.libs.decision.v1.Case;
- * import de.team33.libs.decision.v1.Choices;
+ * import de.team33.libs.decision.v1.Decision;
  *
  * import java.util.Optional;
  * import java.util.function.Predicate;
@@ -31,7 +31,7 @@ import java.util.function.Predicate;
  *     POSITIVE(mean(not(NEGATIVE), input -&gt; input &gt; 0, 1)),
  *     ZERO(tail(not(POSITIVE), 0));
  *
- *     private static final Choices&lt;Integer, Integer&gt; CHOICES = Choices.build(values());
+ *     private static final Decision&lt;Integer, Integer&gt; CHOICES = Decision.build(values());
  *
  *     private final Case&lt;Integer, Integer&gt; backing;
  *
