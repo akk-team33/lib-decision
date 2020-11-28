@@ -2,9 +2,9 @@ package de.team33.test.decision.v1;
 
 import de.team33.test.decision.shared.Input;
 
-final class StaticChoices {
+final class StaticDecision {
 
-    private StaticChoices() {
+    private StaticDecision() {
     }
 
     @SuppressWarnings("OverlyComplexMethod")

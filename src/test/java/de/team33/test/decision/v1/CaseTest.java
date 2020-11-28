@@ -22,7 +22,7 @@ public class CaseTest {
 
     @Test
     public final void opposite() {
-        Stream.of(DynamicChoices.values()).forEach(choice -> {
+        Stream.of(EnumDecision.values()).forEach(choice -> {
             // The opposite of an opposite should always be identical to the original ...
             assertSame(choice, not(not(choice)));
 

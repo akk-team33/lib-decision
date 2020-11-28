@@ -12,7 +12,7 @@ import static de.team33.libs.decision.v1.Case.mean;
 import static de.team33.libs.decision.v1.Case.not;
 import static de.team33.libs.decision.v1.Case.tail;
 
-enum DynamicChoices implements Case<Input, String> {
+enum EnumDecision implements Case<Input, String> {
 
     CASE_0___(head(input -> 0 == input.a)),
     CASE_00__(mean(CASE_0___, input -> 0 == input.b)),
@@ -42,7 +42,7 @@ enum DynamicChoices implements Case<Input, String> {
 
     private final Case<Input, String> backing;
 
-    DynamicChoices(final Case<Input, String> backing) {
+    EnumDecision(final Case<Input, String> backing) {
         this.backing = backing;
     }
 
