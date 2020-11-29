@@ -5,10 +5,11 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-import static de.team33.libs.decision.v1.Event.pending;
-import static de.team33.libs.decision.v1.Event.not;
+import static de.team33.libs.decision.v1.Cases.pending;
+import static de.team33.libs.decision.v1.Cases.not;
 import static java.util.Collections.unmodifiableMap;
 
 public final class Decision<I, R> implements Function<I, R> {
@@ -20,8 +21,9 @@ public final class Decision<I, R> implements Function<I, R> {
     }
 
     @SafeVarargs
-    public static <I, R> Decision<I, R> build(final Event<I, R>... events) {
-        return Stream.of(events)
+    public static <I, R> Decision<I, R> build(final Supplier<Choice<I, R>> ... choices) {
+        return Stream.of(choices)
+                     .map(Supplier::get)
                      .collect(() -> new Builder<I, R>(pending()), Builder::add, Builder::addAll)
                      .build();
     }
@@ -47,19 +49,19 @@ public final class Decision<I, R> implements Function<I, R> {
 
     private static final class Builder<I, R> {
 
-        private final Map<Event<I, R>, Event<I, R>> postConditions = new HashMap<>(0);
-        private final Set<Object> defined = new HashSet<>(0);
-        private final Set<Object> used = new HashSet<>(0);
+        private final Map<Case<R>, Choice<I, R>> postConditions = new HashMap<>(0);
+        private final Set<Case<R>> defined = new HashSet<>(0);
+        private final Set<Case<R>> used = new HashSet<>(0);
 
-        private Builder(final Event<Object, Object> none) {
-            used.add(none);
+        private Builder(final Case<R> pending) {
+            used.add(pending);
         }
 
-        private void add(final Event<I, R> next) {
-            final Event<I, R> pre = next.getPreCondition();
+        private void add(final Choice<I, R> next) {
+            final Case<R> pre = next.getPreCondition();
             postConditions.put(pre, next);
             defined.add(pre);
-            if (next.getResult().isPresent()) {
+            if (next.getPositive().getResult().isPresent()) {
                 defined.add(next);
             }
             used.add(next);

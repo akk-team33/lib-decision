@@ -1,49 +1,43 @@
 package de.team33.test.decision.v1;
 
-import de.team33.libs.decision.v1.Event;
+import de.team33.libs.decision.v1.Case;
+import de.team33.libs.decision.v1.Cases;
+import de.team33.libs.decision.v1.Choice;
 import de.team33.libs.decision.v1.Decision;
+import de.team33.libs.decision.v1.Event;
 import de.team33.test.decision.shared.Input;
 
 import java.util.Optional;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
-import static de.team33.libs.decision.v1.Event.head;
-import static de.team33.libs.decision.v1.Event.mean;
-import static de.team33.libs.decision.v1.Event.not;
-import static de.team33.libs.decision.v1.Event.tail;
+import static de.team33.libs.decision.v1.Cases.not;
 import static de.team33.test.decision.v1.EnumDecision.Condition.*;
 
-enum EnumDecision implements Event<Input, String> {
+enum EnumDecision implements Case<String>, Supplier<Choice<Input, String>> {
 
-    CASE_0___(head(A_IS_0)),
-    CASE_00__(mean(CASE_0___, B_IS_0)),
-    CASE_000_(mean(CASE_00__, C_IS_0)),
+    CASE_0___(Choice.builder(Cases.pending(), A_IS_0)),
+    CASE_00__(Choice.builder(CASE_0___, B_IS_0)),
+    CASE_000_(Choice.builder(CASE_00__, C_IS_0)),
 
-    CASE_1_0_(mean(not(CASE_0___), C_IS_0)),
-    CASE_101_(mean(not(CASE_1_0_), B_IS_0)),
-    CASE_010_(mean(not(CASE_00__), C_IS_0)),
+    CASE_1_0_(Choice.builder(not(CASE_0___), C_IS_0)),
+    CASE_101_(Choice.builder(not(CASE_1_0_), B_IS_0)),
+    CASE_010_(Choice.builder(not(CASE_00__), C_IS_0)),
 
-    CASE_0000(mean(CASE_000_, D_IS_0, "0000")),
-    CASE_0001(tail(not(CASE_0000), "0001")),
-    CASE_0100(mean(CASE_010_, D_IS_0, "0100")),
-    CASE_0101(tail(not(CASE_0100), "0101")),
-    CASE_1_00(mean(CASE_1_0_, D_IS_0, "1_00")),
-    CASE_1_01(tail(not(CASE_1_00), "1_01")),
-    CASE_1010(mean(CASE_101_, D_IS_0, "1010")),
-    CASE_1011(tail(not(CASE_1010), "1011")),
+    CASE_0000(Choice.builder(CASE_000_, D_IS_0, "0000", "0001")),
+    CASE_0100(Choice.builder(CASE_010_, D_IS_0, "0100", "0101")),
+    CASE_1_00(Choice.builder(CASE_1_0_, D_IS_0, "1_00", "1_01")),
+    CASE_1010(Choice.builder(CASE_101_, D_IS_0, "1010", "1011")),
 
-    CASE_0010(mean(not(CASE_000_), D_IS_0, "0010")),
-    CASE_0011(tail(not(CASE_0010), "0011")),
-    CASE_0110(mean(not(CASE_010_), D_IS_0, "0110")),
-    CASE_0111(tail(not(CASE_0110), "0111")),
-    CASE_1110(mean(not(CASE_101_), D_IS_0, "1110")),
-    CASE_1111(tail(not(CASE_1110), "1111"));
+    CASE_0010(Choice.builder(not(CASE_000_), D_IS_0, "0010", "0011")),
+    CASE_0110(Choice.builder(not(CASE_010_), D_IS_0, "0110", "0111")),
+    CASE_1110(Choice.builder(not(CASE_101_), D_IS_0, "1110", "1111"));
 
     private static final Decision<Input, String> DECISION = Decision.build(values());
 
-    private final Event<Input, String> backing;
+    private final Choice.Builder<Input, String> backing;
 
-    EnumDecision(final Event<Input, String> backing) {
+    EnumDecision(final Choice.Builder<Input, String> backing) {
         this.backing = backing;
     }
 
@@ -52,18 +46,8 @@ enum EnumDecision implements Event<Input, String> {
     }
 
     @Override
-    public final Event<Input, String> getPreCondition() {
-        return backing.getPreCondition();
-    }
-
-    @Override
-    public Optional<Predicate<Input>> getCondition() {
-        return backing.getCondition();
-    }
-
-    @Override
-    public Optional<String> getResult() {
-        return backing.getResult();
+    public Choice<Input, String> get() {
+        return backing.build(this);
     }
 
     interface Condition extends Predicate<Input> {
