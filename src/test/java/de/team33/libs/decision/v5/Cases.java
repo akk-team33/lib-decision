@@ -16,8 +16,8 @@ public final class Cases {
     @SuppressWarnings("rawtypes")
     private static final Case PENDING = () -> "PENDING";
     private static final String ALREADY_DEFINED = "Case <%s> ...%n" +
-            "is expected to be associated with result <%s>%n" +
-            "but was already associated with result <%s>";
+            "... is mentioned to be associated with result <%s>%n" +
+            "... but was already associated with result <%s>";
     @SuppressWarnings("rawtypes")
     private static final Map<Case, Opposite> OPPOSITES = new ConcurrentHashMap<>(0);
     @SuppressWarnings("rawtypes")
@@ -55,7 +55,7 @@ public final class Cases {
     /**
      * Creates a {@link Case} that is associated with a final result from a {@link Case} that is not.
      */
-    static <R> Case<R> definite(final Case<R> original, final R result) {
+    public static <R> Case<R> definite(final Case<R> original, final R result) {
         return original.result()
                        .map(present -> checked(present, result, original))
                        .orElseGet(() -> mapped(original, result));
