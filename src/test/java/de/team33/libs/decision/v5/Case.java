@@ -2,11 +2,15 @@ package de.team33.libs.decision.v5;
 
 import java.util.Optional;
 
+
 /**
  * Represents a case within a case distinction.
  * <p>
- * An implementation is best (but not necessarily) as {@code enum}, so that all relevant cases of the case distinction
- * are covered.
+ * An implementation is best (but not necessarily) as {@code enum}, so that all relevant cases of the
+ * case distinction are covered by that enum.
+ * <p>
+ * Note: the definition of a case usually also implies the {@link Cases#not(Case) opposite case}, which then
+ * does not have to be defined explicitly.
  *
  * @param <R> The potential result type.
  */
