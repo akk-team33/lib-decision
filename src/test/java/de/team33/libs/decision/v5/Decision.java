@@ -11,6 +11,47 @@ import java.util.stream.Stream;
 import static de.team33.libs.decision.v5.Cases.pending;
 import static java.util.Collections.unmodifiableMap;
 
+/**
+ * A Decision is finally a {@link Function} that generates a result from an input parameter by walking through
+ * {@link Case}s and {@link Choice}s.
+ * <p>
+ * Here is a simple use case:
+ * <pre>
+ *
+ * import de.team33.libs.decision.v5.Case;
+ * import de.team33.libs.decision.v5.Choice;
+ * import de.team33.libs.decision.v5.Decision;
+ *
+ * import java.util.function.Supplier;
+ *
+ * import static de.team33.libs.decision.v5.Cases.not;
+ * import static de.team33.libs.decision.v5.Cases.pending;
+ * import static de.team33.libs.decision.v5.Choice.stage;
+ *
+ * public enum Signum implements Case&lt;Integer&gt;, Supplier&lt;Choice&lt;Integer, Integer>> {
+ *
+ *     ZERO(stage(pending(), input -&gt; input == 0, 0)),
+ *     POSITIVE(stage(not(ZERO), input -&gt; input &gt; 0, 1, -1));
+ *
+ *     <b>private static final Decision&lt;Integer, Integer&gt; DECISION = Decision.build(values())</b>;
+ *
+ *     private final Choice.Stage&lt;Integer, Integer&gt; backing;
+ *
+ *     Signum(final Choice.Stage&lt;Integer, Integer&gt; backing) {
+ *         this.backing = backing;
+ *     }
+ *
+ *     public static int apply(final int input) {
+ *         return DECISION.apply(input);
+ *     }
+ *
+ *     &#64;Override
+ *     public Choice&lt;Integer, Integer&gt; get() {
+ *         return backing.build(this);
+ *     }
+ * }
+ * </pre>
+ */
 public final class Decision<I, R> implements Function<I, R> {
 
     private final Map<Case<R>, Choice<I, R>> choices;
@@ -27,6 +68,10 @@ public final class Decision<I, R> implements Function<I, R> {
                      .build();
     }
 
+    private static <I, R> Case<R> nextCase(final Choice<I, R> choice, final I input) {
+        return choice.getCondition().test(input) ? choice.getPositive() : choice.getNegative();
+    }
+
     @Override
     public final R apply(final I input) {
         return apply(pending(), input);
@@ -38,10 +83,6 @@ public final class Decision<I, R> implements Function<I, R> {
 
     private R applyPost(final Case<R> base, final I input) {
         return apply(nextCase(choices.get(base), input), input);
-    }
-
-    private static <I, R> Case<R> nextCase(final Choice<I, R> choice, final I input) {
-        return choice.getCondition().test(input) ? choice.getPositive() : choice.getNegative();
     }
 
     private static final class Builder<I, R> {
