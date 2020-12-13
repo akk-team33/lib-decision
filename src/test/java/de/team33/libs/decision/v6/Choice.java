@@ -1,6 +1,9 @@
 package de.team33.libs.decision.v6;
 
+import java.util.Optional;
 import java.util.function.Predicate;
+
+import static de.team33.libs.decision.v6.Cases.not;
 
 /**
  * A {@link Choice} consists of a precondition, an actual condition and two possible outcomes. The latter are not
@@ -16,14 +19,30 @@ import java.util.function.Predicate;
  * @param <P> The parameter type of an underlying {@link Distinction}
  * @param <R> The result type of an underlying {@link Distinction}
  */
-public class Choice<P, R> {
+public final class Choice<P, R> {
+
+    private final Case<R> preCondition;
+    private final Predicate<P> condition;
+    private final Case<R> positive;
+    private final Case<R> negative;
+
+    private Choice(final Stage<P, R> stage) {
+        this.preCondition = stage.preCondition;
+        this.condition = stage.condition;
+        this.positive = Optional.ofNullable(stage.positiveResult)
+                                .map(result -> Cases.setValueOf(stage.positiveCase, result))
+                                .orElse(stage.positiveCase);
+        this.negative = Optional.ofNullable(stage.negativeResult)
+                                .map(result -> Cases.setValueOf(stage.negativeCase, result))
+                                .orElse(stage.negativeCase);
+    }
 
     /**
      * Prepares a {@link Choice} based on a precondition and the actual condition. The {@link Stage result} must then
      * be supplemented with the possible resulting {@link Case}s in order to ultimately make a {@link Choice}.
      */
     public static <P, R> Stage<P, R> prepare(final Case<R> preCondition, final Predicate<P> condition) {
-        throw new UnsupportedOperationException("not yet implemented");
+        return new Stage<>(preCondition, condition);
     }
 
     /**
@@ -32,8 +51,8 @@ public class Choice<P, R> {
      * possible resulting {@link Case}s in order to ultimately make a {@link Choice}.
      */
     public static <P, R> Stage<P, R> prepare(final Case<R> preCondition, final Predicate<P> condition,
-                                             final R positiveResult) {
-        throw new UnsupportedOperationException("not yet implemented");
+                                             final R positive) {
+        return new Stage<>(preCondition, condition).setPositiveResult(positive);
     }
 
     /**
@@ -42,8 +61,25 @@ public class Choice<P, R> {
      * ultimately make a {@link Choice}.
      */
     public static <P, R> Stage<P, R> prepare(final Case<R> preCondition, final Predicate<P> condition,
-                                             final R positiveResult, final R negativeResult) {
-        throw new UnsupportedOperationException("not yet implemented");
+                                             final R positive, final R negative) {
+        return new Stage<>(preCondition, condition).setPositiveResult(positive)
+                                                   .setNegativeResult(negative);
+    }
+
+    final Case<R> getPreCondition() {
+        return preCondition;
+    }
+
+    final Predicate<P> getCondition() {
+        return condition;
+    }
+
+    final Case<R> getPositive() {
+        return positive;
+    }
+
+    final Case<R> getNegative() {
+        return negative;
     }
 
     /**
@@ -51,13 +87,50 @@ public class Choice<P, R> {
      */
     public static final class Stage<P, R> {
 
+        private final Case<R> preCondition;
+        private final Predicate<P> condition;
+
+        private R positiveResult;
+        private R negativeResult;
+        private Case<R> positiveCase;
+        private Case<R> negativeCase;
+
+        private Stage(final Case<R> preCondition, final Predicate<P> condition) {
+            this.preCondition = preCondition;
+            this.condition = condition;
+        }
+
+        final Stage<P, R> setPositiveResult(final R result) {
+            this.positiveResult = result;
+            return this;
+        }
+
+        final Stage<P, R> setNegativeResult(final R result) {
+            this.negativeResult = result;
+            return this;
+        }
+
+        final Stage<P, R> setPositiveCase(final Case<R> value) {
+            this.positiveCase = value;
+            return this;
+        }
+
+        final Stage<P, R> setNegativeCase(final Case<R> value) {
+            this.negativeCase = value;
+            return this;
+        }
+
+        final Choice<P, R> build() {
+            return new Choice<>(this);
+        }
+
         /**
          * Builds a choice by adding the possible positive {@link Case}.
          * The possible negative {@link Case} is implied using the {@link Cases#not(Case) opposite} of the positive
          * {@link Case}.
          */
         public final Choice<P, R> build(final Case<R> positive) {
-            throw new UnsupportedOperationException("not yet implemented");
+            return setPositiveCase(positive).setNegativeCase(not(positive)).build();
         }
     }
 }

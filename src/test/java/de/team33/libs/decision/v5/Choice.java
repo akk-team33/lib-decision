@@ -38,15 +38,17 @@ public final class Choice<P, R> {
     }
 
     /**
-     * Prepares a choice that is preceded by a specific case and that tests a specific condition.
+     * Prepares a {@link Choice} based on a precondition and the actual condition. The {@link Stage result} must then
+     * be supplemented with the possible resulting {@link Case}s in order to ultimately make a {@link Choice}.
      */
     public static <P, R> Stage<P, R> prepare(final Case<R> preCondition, final Predicate<P> condition) {
         return new Stage<>(preCondition, condition);
     }
 
     /**
-     * Prepares a choice preceded by a specific case, testing a specific condition,
-     * and determining an end result for the positive case.
+     * Prepares a {@link Choice} based on a precondition, the actual condition and a final result for the (positive)
+     * {@link Case} that the actual condition is met. The {@link Stage result} must then be supplemented with the
+     * possible resulting {@link Case}s in order to ultimately make a {@link Choice}.
      */
     public static <P, R> Stage<P, R> prepare(final Case<R> preCondition, final Predicate<P> condition,
                                              final R positive) {
@@ -54,8 +56,9 @@ public final class Choice<P, R> {
     }
 
     /**
-     * Prepares a choice preceded by a particular case, testing a particular condition,
-     * and determining an end result for the positive and negative cases.
+     * Prepares a {@link Choice} based on a precondition, the actual condition and a final result for both possible
+     * resulting {@link Case}s. The {@link Stage result} must then be supplemented with those {@link Case}s in order to
+     * ultimately make a {@link Choice}.
      */
     public static <P, R> Stage<P, R> prepare(final Case<R> preCondition, final Predicate<P> condition,
                                              final R positive, final R negative) {
@@ -80,9 +83,8 @@ public final class Choice<P, R> {
     }
 
     /**
-     * Represents a preliminary stage to a {@link Choice}.
+     * Represents a preliminary stage of a {@link Choice}.
      */
-    @SuppressWarnings({"FieldHasSetterButNoGetter", "WeakerAccess"})
     public static final class Stage<P, R> {
 
         private final Case<R> preCondition;
@@ -98,54 +100,34 @@ public final class Choice<P, R> {
             this.condition = condition;
         }
 
-        /**
-         * Sets a positive result for this Stage.
-         */
-        public final Stage<P, R> setPositiveResult(final R result) {
+        final Stage<P, R> setPositiveResult(final R result) {
             this.positiveResult = result;
             return this;
         }
 
-        /**
-         * Sets a negative result for this Stage.
-         */
-        public final Stage<P, R> setNegativeResult(final R result) {
+        final Stage<P, R> setNegativeResult(final R result) {
             this.negativeResult = result;
             return this;
         }
 
-        /**
-         * Sets a positive {@link Case} for this Stage.
-         * <p>
-         * If a {@link #setPositiveResult(Object) positive result} is defined, the case defined here will be associated
-         * with that result.
-         */
-        public final Stage<P, R> setPositiveCase(final Case<R> value) {
+        final Stage<P, R> setPositiveCase(final Case<R> value) {
             this.positiveCase = value;
             return this;
         }
 
-        /**
-         * Sets a negative {@link Case} for this Stage.
-         * <p>
-         * If a {@link #setNegativeResult(Object) negative result} is defined, the case defined here will be associated
-         * with that result.
-         */
-        public final Stage<P, R> setNegativeCase(final Case<R> value) {
+        final Stage<P, R> setNegativeCase(final Case<R> value) {
             this.negativeCase = value;
             return this;
         }
 
-        /**
-         * Creates a {@link Choice} from this Stage.
-         */
-        public final Choice<P, R> build() {
+        final Choice<P, R> build() {
             return new Choice<>(this);
         }
 
         /**
-         * Sets a positive {@link Case} for this Stage, implies a negative {@link Case} and creates a {@link Choice}
-         * from it.
+         * Builds a choice by adding the possible positive {@link Case}.
+         * The possible negative {@link Case} is implied using the {@link Cases#not(Case) opposite} of the positive
+         * {@link Case}.
          */
         public final Choice<P, R> build(final Case<R> positive) {
             return setPositiveCase(positive).setNegativeCase(not(positive)).build();
