@@ -11,16 +11,16 @@ import static de.team33.libs.decision.v1.Case.pending;
 import static de.team33.libs.decision.v1.Case.not;
 import static java.util.Collections.unmodifiableMap;
 
-public final class Decision<I, R> implements Function<I, R> {
+public final class Distinction<I, R> implements Function<I, R> {
 
     private final Map<Case<I, R>, Case<I, R>> postConditions;
 
-    private Decision(final Builder<I, R> builder) {
+    private Distinction(final Builder<I, R> builder) {
         postConditions = unmodifiableMap(builder.postConditions);
     }
 
     @SafeVarargs
-    public static <I, R> Decision<I, R> build(final Case<I, R>... cases) {
+    public static <I, R> Distinction<I, R> build(final Case<I, R>... cases) {
         return Stream.of(cases)
                      .collect(() -> new Builder<I, R>(pending()), Builder::add, Builder::addAll)
                      .build();
@@ -72,7 +72,7 @@ public final class Decision<I, R> implements Function<I, R> {
             throw new UnsupportedOperationException("shouldn't be necessary here");
         }
 
-        public Decision<I, R> build() {
+        public Distinction<I, R> build() {
             final Set<Object> undefined = new HashSet<>(used);
             undefined.removeAll(defined);
             if (!undefined.isEmpty()) {
@@ -85,7 +85,7 @@ public final class Decision<I, R> implements Function<I, R> {
                 throw new UnusedException(unused);
             }
 
-            return new Decision<I, R>(this);
+            return new Distinction<I, R>(this);
         }
     }
 }

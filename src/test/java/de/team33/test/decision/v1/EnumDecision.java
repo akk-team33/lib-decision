@@ -1,7 +1,7 @@
 package de.team33.test.decision.v1;
 
 import de.team33.libs.decision.v1.Case;
-import de.team33.libs.decision.v1.Decision;
+import de.team33.libs.decision.v1.Distinction;
 import de.team33.test.decision.shared.Input;
 
 import java.util.Optional;
@@ -39,7 +39,7 @@ enum EnumDecision implements Case<Input, String> {
     CASE_1110(mean(not(CASE_101_), D_IS_0, "1110")),
     CASE_1111(tail(not(CASE_1110), "1111"));
 
-    private static final Decision<Input, String> DECISION = Decision.build(values());
+    private static final Distinction<Input, String> DISTINCTION = Distinction.build(values());
 
     private final Case<Input, String> backing;
 
@@ -48,7 +48,7 @@ enum EnumDecision implements Case<Input, String> {
     }
 
     static String map(final Input input) {
-        return DECISION.apply(input);
+        return DISTINCTION.apply(input);
     }
 
     @Override
