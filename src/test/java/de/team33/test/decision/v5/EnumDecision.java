@@ -2,7 +2,7 @@ package de.team33.test.decision.v5;
 
 import de.team33.libs.decision.v5.Case;
 import de.team33.libs.decision.v5.Choice;
-import de.team33.libs.decision.v5.Decision;
+import de.team33.libs.decision.v5.Distinction;
 import de.team33.test.decision.shared.Input;
 
 import java.util.function.Predicate;
@@ -31,7 +31,7 @@ enum EnumDecision implements Case<String>, Supplier<Choice<Input, String>> {
     CASE_0110(stage(not(CASE_010_), D_IS_0, "0110", "0111")),
     CASE_1110(stage(not(CASE_101_), D_IS_0, "1110", "1111"));
 
-    private static final Decision<Input, String> DECISION = Decision.build(values());
+    private static final Distinction<Input, String> DISTINCTION = Distinction.of(values());
 
     private final Choice.Stage<Input, String> backing;
 
@@ -40,7 +40,7 @@ enum EnumDecision implements Case<String>, Supplier<Choice<Input, String>> {
     }
 
     static String map(final Input input) {
-        return DECISION.apply(input);
+        return DISTINCTION.apply(input);
     }
 
     @Override

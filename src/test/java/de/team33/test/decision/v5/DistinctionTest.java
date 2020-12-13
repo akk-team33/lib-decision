@@ -8,7 +8,7 @@ import java.util.Random;
 import static de.team33.libs.testing.v1.Attempts.trySerial;
 import static org.junit.Assert.assertEquals;
 
-public class DecisionTest {
+public class DistinctionTest {
 
     private final Random random = new Random();
 

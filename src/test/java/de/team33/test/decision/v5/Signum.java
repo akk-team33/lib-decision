@@ -2,7 +2,7 @@ package de.team33.test.decision.v5;
 
 import de.team33.libs.decision.v5.Case;
 import de.team33.libs.decision.v5.Choice;
-import de.team33.libs.decision.v5.Decision;
+import de.team33.libs.decision.v5.Distinction;
 
 import java.util.function.Supplier;
 
@@ -15,7 +15,7 @@ public enum Signum implements Case<Integer>, Supplier<Choice<Integer, Integer>> 
     ZERO(stage(pending(), input -> input == 0, 0)),
     POSITIVE(stage(not(ZERO), input -> input > 0, 1, -1));
 
-    private static final Decision<Integer, Integer> DECISION = Decision.build(values());
+    private static final Distinction<Integer, Integer> DISTINCTION = Distinction.of(values());
 
     private final Choice.Stage<Integer, Integer> backing;
 
@@ -24,7 +24,7 @@ public enum Signum implements Case<Integer>, Supplier<Choice<Integer, Integer>> 
     }
 
     public static int apply(final int input) {
-        return DECISION.apply(input);
+        return DISTINCTION.apply(input);
     }
 
     @Override
