@@ -7,32 +7,27 @@ import static de.team33.libs.decision.v5.Cases.definite;
 import static de.team33.libs.decision.v5.Cases.not;
 
 /**
- * Represents a decision option, in other words a choice.
+ * A {@link Choice} consists of a precondition, an actual condition and two possible outcomes. The latter are not
+ * necessarily final results of the {@link Choice} or an underlying {@link Distinction}. These can also be
+ * preconditions for further {@link Choice}s.
  * <p>
- * Based on a precondition (a case that has already been confirmed), a decision based on a condition either leads to a
- * (positive) case or to its (negative) opposite.
- * <pre>
+ * In particular, both the precondition and the outcomes are represented as {@link Case}s. The actual condition
+ * represents the core of a {@link Choice} and is treated as a {@link Predicate}.
+ * <p>
+ * It is noticeable that the attributes described above are not reflected in public properties or methods of the
+ * {@link Choice} class itself. However, they are determined by a preliminary {@link Stage Stage}.
  *
- *     pre-condition
- *        (Case)
- *          |
- *          ˅
- *      condition
- *     (Predicate)
- *      /       \
- *     ˅         ˅
- *  positive  negative
- *   (Case)    (Case)
- * </pre>
+ * @param <P> The parameter type of an underlying {@link Distinction}
+ * @param <R> The result type of an underlying {@link Distinction}
  */
-public final class Choice<I, R> {
+public final class Choice<P, R> {
 
     private final Case<R> preCondition;
-    private final Predicate<I> condition;
+    private final Predicate<P> condition;
     private final Case<R> positive;
     private final Case<R> negative;
 
-    private Choice(final Stage<I, R> stage) {
+    private Choice(final Stage<P, R> stage) {
         this.preCondition = stage.preCondition;
         this.condition = stage.condition;
         this.positive = Optional.ofNullable(stage.positiveResult)
@@ -46,7 +41,7 @@ public final class Choice<I, R> {
     /**
      * Prepares a choice that is preceded by a specific case and that tests a specific condition.
      */
-    public static <I, R> Stage<I, R> stage(final Case<R> preCondition, final Predicate<I> condition) {
+    public static <P, R> Stage<P, R> prepare(final Case<R> preCondition, final Predicate<P> condition) {
         return new Stage<>(preCondition, condition);
     }
 
@@ -54,7 +49,8 @@ public final class Choice<I, R> {
      * Prepares a choice preceded by a specific case, testing a specific condition,
      * and determining an end result for the positive case.
      */
-    public static <I, R> Stage<I, R> stage(final Case<R> preCondition, final Predicate<I> condition, final R positive) {
+    public static <P, R> Stage<P, R> prepare(final Case<R> preCondition, final Predicate<P> condition,
+                                             final R positive) {
         return new Stage<>(preCondition, condition).setPositiveResult(positive);
     }
 
@@ -62,8 +58,8 @@ public final class Choice<I, R> {
      * Prepares a choice preceded by a particular case, testing a particular condition,
      * and determining an end result for the positive and negative cases.
      */
-    public static <I, R> Stage<I, R> stage(final Case<R> preCondition, final Predicate<I> condition,
-                                           final R positive, final R negative) {
+    public static <P, R> Stage<P, R> prepare(final Case<R> preCondition, final Predicate<P> condition,
+                                             final R positive, final R negative) {
         return new Stage<>(preCondition, condition).setPositiveResult(positive)
                                                    .setNegativeResult(negative);
     }
@@ -72,7 +68,7 @@ public final class Choice<I, R> {
         return preCondition;
     }
 
-    final Predicate<I> getCondition() {
+    final Predicate<P> getCondition() {
         return condition;
     }
 
@@ -88,17 +84,17 @@ public final class Choice<I, R> {
      * Represents a preliminary stage to a {@link Choice}.
      */
     @SuppressWarnings({"FieldHasSetterButNoGetter", "WeakerAccess"})
-    public static final class Stage<I, R> {
+    public static final class Stage<P, R> {
 
         private final Case<R> preCondition;
-        private final Predicate<I> condition;
+        private final Predicate<P> condition;
 
         private R positiveResult;
         private R negativeResult;
         private Case<R> positiveCase;
         private Case<R> negativeCase;
 
-        private Stage(final Case<R> preCondition, final Predicate<I> condition) {
+        private Stage(final Case<R> preCondition, final Predicate<P> condition) {
             this.preCondition = preCondition;
             this.condition = condition;
         }
@@ -106,7 +102,7 @@ public final class Choice<I, R> {
         /**
          * Sets a positive result for this Stage.
          */
-        public final Stage<I, R> setPositiveResult(final R result) {
+        public final Stage<P, R> setPositiveResult(final R result) {
             this.positiveResult = result;
             return this;
         }
@@ -114,7 +110,7 @@ public final class Choice<I, R> {
         /**
          * Sets a negative result for this Stage.
          */
-        public final Stage<I, R> setNegativeResult(final R result) {
+        public final Stage<P, R> setNegativeResult(final R result) {
             this.negativeResult = result;
             return this;
         }
@@ -125,7 +121,7 @@ public final class Choice<I, R> {
          * If a {@link #setPositiveResult(Object) positive result} is defined, the case defined here will be associated
          * with that result.
          */
-        public final Stage<I, R> setPositiveCase(final Case<R> value) {
+        public final Stage<P, R> setPositiveCase(final Case<R> value) {
             this.positiveCase = value;
             return this;
         }
@@ -136,7 +132,7 @@ public final class Choice<I, R> {
          * If a {@link #setNegativeResult(Object) negative result} is defined, the case defined here will be associated
          * with that result.
          */
-        public final Stage<I, R> setNegativeCase(final Case<R> value) {
+        public final Stage<P, R> setNegativeCase(final Case<R> value) {
             this.negativeCase = value;
             return this;
         }
@@ -144,7 +140,7 @@ public final class Choice<I, R> {
         /**
          * Creates a {@link Choice} from this Stage.
          */
-        public final Choice<I, R> build() {
+        public final Choice<P, R> build() {
             return new Choice<>(this);
         }
 
@@ -152,7 +148,7 @@ public final class Choice<I, R> {
          * Sets a positive {@link Case} for this Stage, implies a negative {@link Case} and creates a {@link Choice}
          * from it.
          */
-        public final Choice<I, R> build(final Case<R> positive) {
+        public final Choice<P, R> build(final Case<R> positive) {
             return setPositiveCase(positive).setNegativeCase(not(positive)).build();
         }
     }

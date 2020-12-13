@@ -1,5 +1,8 @@
 package de.team33.libs.decision.v5;
 
+import de.team33.libs.decision.v1.UndefinedException;
+import de.team33.libs.decision.v1.UnusedException;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;

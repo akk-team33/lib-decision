@@ -8,12 +8,12 @@ import java.util.function.Supplier;
 
 import static de.team33.libs.decision.v5.Cases.not;
 import static de.team33.libs.decision.v5.Cases.pending;
-import static de.team33.libs.decision.v5.Choice.stage;
+import static de.team33.libs.decision.v5.Choice.prepare;
 
 public enum Signum implements Case<Integer>, Supplier<Choice<Integer, Integer>> {
 
-    ZERO(stage(pending(), input -> input == 0, 0)),
-    POSITIVE(stage(not(ZERO), input -> input > 0, 1, -1));
+    ZERO(Choice.prepare(pending(), input -> input == 0, 0)),
+    POSITIVE(prepare(not(ZERO), input -> input > 0, 1, -1));
 
     private static final Distinction<Integer, Integer> DISTINCTION = Distinction.of(values());
 
