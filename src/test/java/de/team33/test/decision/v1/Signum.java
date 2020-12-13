@@ -1,27 +1,25 @@
 package de.team33.test.decision.v1;
 
-import de.team33.libs.decision.v1.Case;
-import de.team33.libs.decision.v1.Distinction;
+import de.team33.libs.decision.v5.Case;
+import de.team33.libs.decision.v5.Choice;
+import de.team33.libs.decision.v5.Distinction;
 
-import java.util.Optional;
-import java.util.function.Predicate;
+import java.util.function.Supplier;
 
-import static de.team33.libs.decision.v1.Case.head;
-import static de.team33.libs.decision.v1.Case.mean;
-import static de.team33.libs.decision.v1.Case.not;
-import static de.team33.libs.decision.v1.Case.tail;
+import static de.team33.libs.decision.v5.Cases.not;
+import static de.team33.libs.decision.v5.Cases.pending;
+import static de.team33.libs.decision.v5.Choice.prepare;
 
-public enum Signum implements Case<Integer, Integer> {
+public enum Signum implements Case<Integer>, Supplier<Choice<Integer, Integer>> {
 
-    NEGATIVE(head(input -> input < 0, -1)),
-    POSITIVE(mean(not(NEGATIVE), input -> input > 0, 1)),
-    ZERO(tail(not(POSITIVE), 0));
+    ZERO(Choice.prepare(pending(), input -> input == 0, 0)),
+    POSITIVE(prepare(not(ZERO), input -> input > 0, 1, -1));
 
-    private static final Distinction<Integer, Integer> DISTINCTION = Distinction.build(values());
+    private static final Distinction<Integer, Integer> DISTINCTION = Distinction.of(values());
 
-    private final Case<Integer, Integer> backing;
+    private final Choice.Stage<Integer, Integer> backing;
 
-    Signum(final Case<Integer, Integer> backing) {
+    Signum(final Choice.Stage<Integer, Integer> backing) {
         this.backing = backing;
     }
 
@@ -30,17 +28,7 @@ public enum Signum implements Case<Integer, Integer> {
     }
 
     @Override
-    public final Case<Integer, Integer> getPreCondition() {
-        return backing.getPreCondition();
-    }
-
-    @Override
-    public final Optional<Predicate<Integer>> getCondition() {
-        return backing.getCondition();
-    }
-
-    @Override
-    public final Optional<Integer> getResult() {
-        return backing.getResult();
+    public Choice<Integer, Integer> get() {
+        return backing.build(this);
     }
 }
