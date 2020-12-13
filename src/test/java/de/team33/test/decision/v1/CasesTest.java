@@ -1,7 +1,7 @@
 package de.team33.test.decision.v1;
 
-import de.team33.libs.decision.v5.Case;
-import de.team33.libs.decision.v5.Cases;
+import de.team33.libs.decision.v1.Case;
+import de.team33.libs.decision.v1.Cases;
 import org.junit.Test;
 
 import java.util.Date;
@@ -13,7 +13,7 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-import static de.team33.libs.decision.v5.Cases.not;
+import static de.team33.libs.decision.v1.Cases.not;
 import static de.team33.libs.testing.v1.Attempts.tryParallel;
 import static java.util.Collections.singleton;
 import static java.util.Collections.synchronizedList;
