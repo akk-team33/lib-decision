@@ -107,7 +107,7 @@ public final class Distinction<P, R> implements Function<P, R> {
     }
 
     private R apply(final Case<R> base, final P input) {
-        return base.result().orElseGet(() -> applyPost(base, input));
+        return Cases.valueOf(base).orElseGet(() -> applyPost(base, input));
     }
 
     private R applyPost(final Case<R> base, final P input) {
@@ -134,7 +134,7 @@ public final class Distinction<P, R> implements Function<P, R> {
 
         private void addUsed(final Case<R> consequence) {
             used.add(consequence);
-            if (consequence.result().isPresent()) {
+            if (Cases.valueOf(consequence).isPresent()) {
                 defined.add(consequence);
             }
         }

@@ -1,7 +1,5 @@
 package de.team33.libs.decision.v5;
 
-import java.util.Optional;
-
 
 /**
  * Represents a case within a case distinction.
@@ -22,11 +20,4 @@ public interface Case<R> {
      * If the cases are implemented as {@code enum}, this method is implemented "automatically".
      */
     String name();
-
-    /**
-     * A case can be associated with a final result. If not, further cases have to be distinguished.
-     */
-    default Optional<R> result() {
-        return Optional.empty();
-    }
 }

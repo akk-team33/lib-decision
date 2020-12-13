@@ -4,13 +4,11 @@ import de.team33.libs.decision.v5.Case;
 import de.team33.libs.decision.v5.Cases;
 import org.junit.Test;
 
-import java.math.BigInteger;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Stream;
@@ -21,11 +19,8 @@ import static java.util.Collections.singleton;
 import static java.util.Collections.synchronizedList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
-import static org.junit.Assert.fail;
 
 public class CasesTest {
-
-    private final Random random = new Random();
 
     @Test
     public final void pending() {
@@ -55,29 +50,7 @@ public class CasesTest {
         });
     }
 
-    @Test
-    public final void definite() {
-        Stream.of(MyCase.values()).forEach(original -> {
-            final String value = new BigInteger(64 + random.nextInt(64), random).toString(Character.MAX_RADIX);
-            final Case<String> definite = Cases.definite(original, value);
-            assertSame(definite, Cases.definite(original, value));
-            assertSame(definite, Cases.definite(definite, value));
-
-            try {
-                fail("Expected to fail but was " + Cases.definite(original, "another" + value));
-            } catch (final IllegalArgumentException e) {
-                // ok!
-            }
-
-            try {
-                fail("Expected to fail but was " + Cases.definite(definite, "another" + value));
-            } catch (final IllegalArgumentException e) {
-                // ok!
-            }
-        });
-    }
-
     private enum MyCase implements Case<String> {
-        CASE_0, CASE_1, CASE_2, CASE_3, CASE_4, CASE_5, CASE_6, CASE_7, CASE_8, CASE_9, CASE_10;
+        CASE_0, CASE_1, CASE_2, CASE_3, CASE_4, CASE_5, CASE_6, CASE_7, CASE_8, CASE_9, CASE_10
     }
 }

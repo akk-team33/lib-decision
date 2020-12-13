@@ -3,7 +3,6 @@ package de.team33.libs.decision.v5;
 import java.util.Optional;
 import java.util.function.Predicate;
 
-import static de.team33.libs.decision.v5.Cases.definite;
 import static de.team33.libs.decision.v5.Cases.not;
 
 /**
@@ -31,10 +30,10 @@ public final class Choice<P, R> {
         this.preCondition = stage.preCondition;
         this.condition = stage.condition;
         this.positive = Optional.ofNullable(stage.positiveResult)
-                                .map(result -> definite(stage.positiveCase, result))
+                                .map(result -> Cases.setValueOf(stage.positiveCase, result))
                                 .orElse(stage.positiveCase);
         this.negative = Optional.ofNullable(stage.negativeResult)
-                                .map(result -> definite(stage.negativeCase, result))
+                                .map(result -> Cases.setValueOf(stage.negativeCase, result))
                                 .orElse(stage.negativeCase);
     }
 

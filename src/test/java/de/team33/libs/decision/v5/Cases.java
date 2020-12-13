@@ -3,7 +3,6 @@ package de.team33.libs.decision.v5;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.BiFunction;
 
 import static java.lang.String.format;
 
@@ -21,7 +20,7 @@ public final class Cases {
     @SuppressWarnings("rawtypes")
     private static final Map<Case, Opposite> OPPOSITES = new ConcurrentHashMap<>(0);
     @SuppressWarnings("rawtypes")
-    private static final Map<Case, Definite> DEFINITES = new ConcurrentHashMap<>(0);
+    private static final Map<Case, Object> VALUES = new ConcurrentHashMap<>(0);
 
     private Cases() {
     }
@@ -52,40 +51,17 @@ public final class Cases {
                 : OPPOSITES.computeIfAbsent(original, Opposite::new);
     }
 
-    /**
-     * Creates a {@link Case} that is associated with a final result from a {@link Case} that is not.
-     */
-    public static <R> Case<R> definite(final Case<R> original, final R result) {
-        return original.result()
-                       .map(present -> checked(present, result, original))
-                       .orElseGet(() -> mapped(original, result));
+    static <R> Optional<R> valueOf(final Case<R> rCase) {
+        //noinspection unchecked
+        return Optional.ofNullable((R) VALUES.get(rCase));
     }
 
-    private static <R> Case<R> mapped(final Case<R> original, final R result) {
-        return compute(original, remapping(result));
-    }
-
-    private static <R> BiFunction<Case<R>, Definite<R>, Definite<R>> remapping(final R result) {
-        return (original, found) -> {
-            if (null == found)
-                return new Definite<>(original, result);
-            else {
-                return checked(found.result().orElse(null), result, found);
-            }
-        };
-    }
-
-    @SuppressWarnings({"rawtypes", "unchecked"})
-    private static <R> Definite<R> compute(final Case original, final BiFunction remapping) {
-        return DEFINITES.compute(original, remapping);
-    }
-
-    private static <R, C extends Case<R>> C checked(final R present, final R desired, final C subject) {
-        if (desired.equals(present)) {
-            return subject;
+    static <R> Case<R> setValueOf(final Case<R> rCase, final R value) {
+        final Object already = VALUES.putIfAbsent(rCase, value);
+        if ((null == already) || already.equals(value)) {
+            return rCase;
         } else {
-            throw new IllegalArgumentException(
-                    format(ALREADY_DEFINED, subject, desired, present));
+            throw new IllegalStateException(format(ALREADY_DEFINED, rCase, value, already));
         }
     }
 
@@ -100,32 +76,6 @@ public final class Cases {
         @Override
         public final String name() {
             return "~" + original.name();
-        }
-
-        @Override
-        public final String toString() {
-            return name();
-        }
-    }
-
-    private static final class Definite<R> implements Case<R> {
-
-        private final Case<R> original;
-        private final R result;
-
-        private Definite(final Case<R> original, final R result) {
-            this.original = original;
-            this.result = result;
-        }
-
-        @Override
-        public final Optional<R> result() {
-            return Optional.of(result);
-        }
-
-        @Override
-        public final String name() {
-            return original.name();
         }
 
         @Override
