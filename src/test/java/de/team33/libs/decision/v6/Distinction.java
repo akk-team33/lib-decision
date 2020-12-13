@@ -17,6 +17,34 @@ import java.util.stream.Stream;
  * Usually the result of a {@link Distinction} will depend on several conditions, whereby not all possible conditions
  * must in fact be considered under any circumstances. Instead, the relevance of a condition may depend on the result
  * of checking a precondition.
+ * <p>
+ * Here is a small example of how a {@link Distinction} can be used in conjunction with {@link Choice}s and
+ * {@link Case}s:
+ * <pre>
+ *
+ * public enum Signum implements Case&lt;Integer&gt;, Supplier&lt;Choice&lt;Integer, Integer&gt;&gt; {
+ *
+ *     ZERO(prepare(pending(), input -&gt; input == 0, 0)),
+ *     POSITIVE(prepare(not(ZERO), input -&gt; input &gt; 0, 1, -1));
+ *
+ *     private static final Distinction&lt;Integer, Integer&gt; DISTINCTION = Distinction.of(values());
+ *
+ *     private final Choice.Stage&lt;Integer, Integer&gt; backing;
+ *
+ *     Signum(final Choice.Stage&lt;Integer, Integer&gt; backing) {
+ *         this.backing = backing;
+ *     }
+ *
+ *     public static int apply(final int input) {
+ *         return DISTINCTION.apply(input);
+ *     }
+ *
+ *     &#64;Override
+ *     public final Choice&lt;Integer, Integer&gt; get() {
+ *         return backing.build(this);
+ *     }
+ * }
+ * </pre>
  *
  * @param <P> The parameter type
  * @param <R> The result type
