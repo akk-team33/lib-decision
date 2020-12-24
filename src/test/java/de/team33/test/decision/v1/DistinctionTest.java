@@ -1,6 +1,7 @@
 package de.team33.test.decision.v1;
 
 import de.team33.test.decision.shared.Input;
+import de.team33.test.decision.shared.StaticDecision;
 import org.junit.Test;
 
 import java.util.Random;

@@ -1,14 +1,12 @@
-package de.team33.test.decision.v1;
+package de.team33.test.decision.shared;
 
-import de.team33.test.decision.shared.Input;
-
-final class StaticDecision {
+public final class StaticDecision {
 
     private StaticDecision() {
     }
 
     @SuppressWarnings("OverlyComplexMethod")
-    static String map(final Input input) {
+    public static String map(final Input input) {
         if (0 == input.a) {
             if (0 == input.b) {
                 if (0 == input.c) {
