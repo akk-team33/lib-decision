@@ -1,18 +1,31 @@
 package de.team33.test.decision.v3;
 
-import de.team33.libs.decision.v3.Case;
-import de.team33.libs.decision.v3.Distinction;
+import java.util.function.Function;
 
-public enum Signum implements Case<Integer, Integer> {
+import static de.team33.libs.decision.v3.Choice.*;
 
-    NON_ZERO(Case.of(input -> input > 0, 1, -1)),
-    PENDING(Case.of(input -> input == 0, 0, NON_ZERO));
+public enum Signum implements Function<Integer, Integer> {
 
-    private static final Distinction<Integer, Integer> DISTINCTION = Distinction.of(values());
+    NEGATIVE(definite(-1)),
 
-    private final Case<Integer, Integer> backing;
+    POSITIVE(definite(1)),
 
-    Signum(final Case<Integer, Integer> backing) {
+    NON_ZERO(choice(input -> input > 0, POSITIVE, NEGATIVE)),
+
+    ANY(choice(input -> input == 0, 0, NON_ZERO));
+
+    private final Function<Integer, Integer> backing;
+
+    Signum(final Function<Integer, Integer> backing) {
         this.backing = backing;
+    }
+
+    public static int map(final int input) {
+        return ANY.apply(input);
+    }
+
+    @Override
+    public Integer apply(final Integer input) {
+        return backing.apply(input);
     }
 }
