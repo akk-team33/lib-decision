@@ -10,9 +10,9 @@ public enum Signum implements Function<Integer, Integer> {
 
     POSITIVE(definite(1)),
 
-    NON_ZERO(choice(input -> input > 0, POSITIVE, NEGATIVE)),
+    NON_ZERO(of(input -> input > 0, POSITIVE, NEGATIVE)),
 
-    ANY(choice(input -> input == 0, 0, NON_ZERO));
+    ANY(of(input -> input == 0, 0, NON_ZERO));
 
     private final Function<Integer, Integer> backing;
 

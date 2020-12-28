@@ -19,22 +19,22 @@ public class Choice<P, R> implements Function<P, R> {
         return parameter -> value;
     }
 
-    public static <P, R> Function<P, R> choice(final Predicate<P> condition, final R positive, final R negative) {
-        return choice(condition, Choice.<P, R>definite(positive), Choice.<P, R>definite(negative));
+    public static <P, R> Choice<P, R> of(final Predicate<P> condition, final R positive, final R negative) {
+        return new Choice<>(condition, definite(positive), definite(negative));
     }
 
-    public static <P, R> Function<P, R> choice(final Predicate<P> condition,
-                                               final R positive, final Function<P, R> negative) {
+    public static <P, R> Choice<P, R> of(final Predicate<P> condition,
+                                           final R positive, final Function<P, R> negative) {
         return new Choice<>(condition, definite(positive), negative);
     }
 
-    public static <P, R> Function<P, R> choice(final Predicate<P> condition,
-                                               final Function<P, R> positive, final R negative) {
+    public static <P, R> Choice<P, R> of(final Predicate<P> condition,
+                                           final Function<P, R> positive, final R negative) {
         return new Choice<>(condition, positive, definite(negative));
     }
 
-    public static <P, R> Function<P, R> choice(final Predicate<P> condition,
-                                               final Function<P, R> positive, final Function<P, R> negative) {
+    public static <P, R> Choice<P, R> of(final Predicate<P> condition,
+                                           final Function<P, R> positive, final Function<P, R> negative) {
         return new Choice<>(condition, positive, negative);
     }
 
