@@ -1,8 +1,8 @@
-package de.team33.test.decision.v3;
+package de.team33.test.decision.v2;
 
 import java.util.function.Function;
 
-import static de.team33.libs.decision.v3.Choice.*;
+import static de.team33.libs.decision.v2.Choice.*;
 
 public enum Signum implements Function<Integer, Integer> {
 
