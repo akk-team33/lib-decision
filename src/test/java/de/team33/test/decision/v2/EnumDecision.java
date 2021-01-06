@@ -40,6 +40,7 @@ public enum EnumDecision implements Function<Input, String> {
         return backing.apply(input);
     }
 
+    @FunctionalInterface
     interface Condition extends Predicate<Input> {
 
         Condition A_IS_0 = input -> 0 == input.a;
