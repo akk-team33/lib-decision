@@ -5,25 +5,25 @@ import de.team33.test.decision.shared.Input;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import static de.team33.libs.decision.v2.Choice.of;
+import static de.team33.libs.decision.v2.Choice.*;
 import static de.team33.test.decision.v2.EnumDecision.Condition.*;
 
 public enum EnumDecision implements Function<Input, String> {
 
-    CASE_000_(of(D_IS_0, "0000", "0001")),
-    CASE_001_(of(D_IS_0, "0010", "0011")),
-    CASE_010_(of(D_IS_0, "0100", "0101")),
-    CASE_011_(of(D_IS_0, "0110", "0111")),
-    CASE_101_(of(D_IS_0, "1010", "1011")),
-    CASE_1_0_(of(D_IS_0, "1_00", "1_01")),
-    CASE_111_(of(D_IS_0, "1110", "1111")),
+    CASE_000_(when(D_IS_0).then("0000").orElse("0001")),
+    CASE_001_(when(D_IS_0).then("0010").orElse("0011")),
+    CASE_010_(when(D_IS_0).then("0100").orElse("0101")),
+    CASE_011_(when(D_IS_0).then("0110").orElse("0111")),
+    CASE_101_(when(D_IS_0).then("1010").orElse("1011")),
+    CASE_1_0_(when(D_IS_0).then("1_00").orElse("1_01")),
+    CASE_111_(when(D_IS_0).then("1110").orElse("1111")),
 
-    CASE_00__(of(C_IS_0, CASE_000_, CASE_001_)),
-    CASE_01__(of(C_IS_0, CASE_010_, CASE_011_)),
-    CASE_1_1_(of(B_IS_0, CASE_101_, CASE_111_)),
-    CASE_0___(of(B_IS_0, CASE_00__, CASE_01__)),
-    CASE_1___(of(C_IS_0, CASE_1_0_, CASE_1_1_)),
-    CASE_____(of(A_IS_0, CASE_0___, CASE_1___));
+    CASE_00__(when(C_IS_0).then(CASE_000_).orElse(CASE_001_)),
+    CASE_01__(when(C_IS_0).then(CASE_010_).orElse(CASE_011_)),
+    CASE_1_1_(when(B_IS_0).then(CASE_101_).orElse(CASE_111_)),
+    CASE_0___(when(B_IS_0).then(CASE_00__).orElse(CASE_01__)),
+    CASE_1___(when(C_IS_0).then(CASE_1_0_).orElse(CASE_1_1_)),
+    CASE_____(when(A_IS_0).then(CASE_0___).orElse(CASE_1___));
 
     private final Function<Input, String> backing;
 

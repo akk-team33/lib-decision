@@ -15,31 +15,57 @@ public class Choice<P, R> implements Function<P, R> {
         this.negative = negative;
     }
 
-    public static <P, R> Function<P, R> definite(final R value) {
-        return parameter -> value;
-    }
-
     public static <P, R> Choice<P, R> of(final Predicate<P> condition, final R positive, final R negative) {
-        return new Choice<>(condition, definite(positive), definite(negative));
+        return when(condition).then(positive).orElse(negative);
     }
 
     public static <P, R> Choice<P, R> of(final Predicate<P> condition,
-                                           final R positive, final Function<P, R> negative) {
-        return new Choice<>(condition, definite(positive), negative);
+                                         final R positive, final Function<P, R> negative) {
+        return when(condition).then(positive).orElse(negative);
     }
 
     public static <P, R> Choice<P, R> of(final Predicate<P> condition,
-                                           final Function<P, R> positive, final R negative) {
-        return new Choice<>(condition, positive, definite(negative));
+                                         final Function<P, R> positive, final R negative) {
+        return when(condition).then(positive).orElse(negative);
     }
 
     public static <P, R> Choice<P, R> of(final Predicate<P> condition,
-                                           final Function<P, R> positive, final Function<P, R> negative) {
-        return new Choice<>(condition, positive, negative);
+                                         final Function<P, R> positive, final Function<P, R> negative) {
+        return when(condition).then(positive).orElse(negative);
     }
 
     @Override
     public final R apply(final P parameter) {
         return (condition.test(parameter) ? positive : negative).apply(parameter);
+    }
+
+    public static <P> Condition<P> when(final Predicate<P> condition) {
+        return new Condition<P>(condition);
+    }
+
+    public static class Condition<P> {
+
+        private final Predicate<P> condition;
+
+        private Condition(final Predicate<P> condition) {
+            this.condition = condition;
+        }
+
+        public final <R> Consequence<P, R> then(final Function<P, R> positive) {
+            return negative -> new Choice<>(condition, positive, negative);
+        }
+
+        public final <R> Consequence<P, R> then(final R positive) {
+            return then(any -> positive);
+        }
+    }
+
+    public interface Consequence<P, R> {
+
+        Choice<P, R> orElse(Function<P, R> negative);
+
+        default Choice<P, R> orElse(final R negative) {
+            return orElse(any -> negative);
+        }
     }
 }
