@@ -10,20 +10,20 @@ import static de.team33.test.decision.v2.EnumDecision.Condition.*;
 
 public enum EnumDecision implements Function<Input, String> {
 
-    CASE_000_(when(D_IS_0).then("0000").orElse("0001")),
-    CASE_001_(when(D_IS_0).then("0010").orElse("0011")),
-    CASE_010_(when(D_IS_0).then("0100").orElse("0101")),
-    CASE_011_(when(D_IS_0).then("0110").orElse("0111")),
-    CASE_101_(when(D_IS_0).then("1010").orElse("1011")),
-    CASE_1_0_(when(D_IS_0).then("1_00").orElse("1_01")),
-    CASE_111_(when(D_IS_0).then("1110").orElse("1111")),
+    CASE_000_(on(D_IS_0).reply("0000").orReply("0001")),
+    CASE_001_(on(D_IS_0).reply("0010").orReply("0011")),
+    CASE_010_(on(D_IS_0).reply("0100").orReply("0101")),
+    CASE_011_(on(D_IS_0).reply("0110").orReply("0111")),
+    CASE_101_(on(D_IS_0).reply("1010").orReply("1011")),
+    CASE_1_0_(on(D_IS_0).reply("1_00").orReply("1_01")),
+    CASE_111_(on(D_IS_0).reply("1110").orReply("1111")),
 
-    CASE_00__(when(C_IS_0).then(CASE_000_).orElse(CASE_001_)),
-    CASE_01__(when(C_IS_0).then(CASE_010_).orElse(CASE_011_)),
-    CASE_1_1_(when(B_IS_0).then(CASE_101_).orElse(CASE_111_)),
-    CASE_0___(when(B_IS_0).then(CASE_00__).orElse(CASE_01__)),
-    CASE_1___(when(C_IS_0).then(CASE_1_0_).orElse(CASE_1_1_)),
-    CASE_____(when(A_IS_0).then(CASE_0___).orElse(CASE_1___));
+    CASE_00__(on(C_IS_0).apply(CASE_000_).orApply(CASE_001_)),
+    CASE_01__(on(C_IS_0).apply(CASE_010_).orApply(CASE_011_)),
+    CASE_1_1_(on(B_IS_0).apply(CASE_101_).orApply(CASE_111_)),
+    CASE_0___(on(B_IS_0).apply(CASE_00__).orApply(CASE_01__)),
+    CASE_1___(on(C_IS_0).apply(CASE_1_0_).orApply(CASE_1_1_)),
+    CASE_____(on(A_IS_0).apply(CASE_0___).orApply(CASE_1___));
 
     private final Function<Input, String> backing;
 

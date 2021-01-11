@@ -11,9 +11,9 @@ public enum Signum implements Function<Integer, Integer> {
 
     POSITIVE(any -> 1),
 
-    NON_ZERO(when(Condition.POSITIVE).then(POSITIVE).orElse(NEGATIVE)),
+    NON_ZERO(on(Condition.POSITIVE).apply(POSITIVE).orApply(NEGATIVE)),
 
-    ANY(when(Condition.ZERO).then(0).orElse(NON_ZERO));
+    ANY(on(Condition.ZERO).reply(0).orApply(NON_ZERO));
 
     private final Function<Integer, Integer> backing;
 
