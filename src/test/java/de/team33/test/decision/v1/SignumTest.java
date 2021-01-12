@@ -1,4 +1,4 @@
-package de.team33.test.decision.v2;
+package de.team33.test.decision.v1;
 
 import de.team33.libs.testing.v1.Attempts;
 import org.junit.Test;

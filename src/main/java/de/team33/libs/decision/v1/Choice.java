@@ -1,4 +1,4 @@
-package de.team33.libs.decision.v2;
+package de.team33.libs.decision.v1;
 
 import java.util.function.Function;
 import java.util.function.Predicate;

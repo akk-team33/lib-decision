@@ -1,6 +1,6 @@
-package de.team33.test.decision.v2;
+package de.team33.test.decision.v1;
 
-import de.team33.libs.decision.v2.Choice;
+import de.team33.libs.decision.v1.Choice;
 
 import java.util.function.Function;
 import java.util.function.Predicate;

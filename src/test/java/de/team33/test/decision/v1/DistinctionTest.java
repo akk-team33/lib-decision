@@ -1,4 +1,4 @@
-package de.team33.test.decision.v2;
+package de.team33.test.decision.v1;
 
 import de.team33.test.decision.shared.Input;
 import de.team33.test.decision.shared.StaticDecision;

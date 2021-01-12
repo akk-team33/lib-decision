@@ -1,12 +1,12 @@
-package de.team33.test.decision.v2;
+package de.team33.test.decision.v1;
 
 import de.team33.test.decision.shared.Input;
 
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import static de.team33.libs.decision.v2.Choice.*;
-import static de.team33.test.decision.v2.EnumDecision.Condition.*;
+import static de.team33.libs.decision.v1.Choice.*;
+import static de.team33.test.decision.v1.EnumDecision.Condition.*;
 
 public enum EnumDecision implements Function<Input, String> {
 
