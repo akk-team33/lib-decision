@@ -3,6 +3,14 @@ package de.team33.libs.decision.v2;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+/**
+ * A functional implementation of a simple decision.
+ *
+ * Typically used to implement multiple choices
+ *
+ * @param <P>
+ * @param <R>
+ */
 public class Choice<P, R> implements Function<P, R> {
 
     private final Predicate<P> condition;
