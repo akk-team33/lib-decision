@@ -10,7 +10,6 @@
 
 ## maven dependency
 
-    <!-- not yet available -->
     <dependency>
       <groupId>de.team33.libs</groupId>
       <artifactId>lib-decision-01</artifactId>
