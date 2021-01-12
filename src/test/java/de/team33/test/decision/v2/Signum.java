@@ -1,19 +1,17 @@
 package de.team33.test.decision.v2;
 
+import de.team33.libs.decision.v2.Choice;
+
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import static de.team33.libs.decision.v2.Choice.*;
-
 public enum Signum implements Function<Integer, Integer> {
-
-    NEGATIVE(any -> -1),
 
     POSITIVE(any -> 1),
 
-    NON_ZERO(on(Condition.POSITIVE).apply(POSITIVE).orApply(NEGATIVE)),
+    NON_ZERO(Choice.on(Condition.IS_POSITIVE).apply(POSITIVE).orReply(-1)),
 
-    ANY(on(Condition.ZERO).reply(0).orApply(NON_ZERO));
+    ANY(Choice.on(Condition.IS_ZERO).reply(0).orApply(NON_ZERO));
 
     private final Function<Integer, Integer> backing;
 
@@ -32,7 +30,7 @@ public enum Signum implements Function<Integer, Integer> {
 
     interface Condition extends Predicate<Integer> {
 
-        Condition ZERO = input -> input == 0;
-        Condition POSITIVE = input -> input > 0;
+        Condition IS_ZERO = input -> input == 0;
+        Condition IS_POSITIVE = input -> input > 0;
     }
 }
